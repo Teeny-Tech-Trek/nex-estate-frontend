@@ -51,7 +51,7 @@ export const getBillingInfo = async (): Promise<BillingInfo> => {
  */
 export const getPlans = async (): Promise<Plan[]> => {
   try {
-    const response = await api.get<Plan[]>('/api/billing/plans');
+    const response = await api.get<Plan[]>('/billing/plans');
     return response.data;
   } catch (error) {
     console.error('Error fetching plans:', error);
@@ -66,7 +66,7 @@ export const getPlans = async (): Promise<Plan[]> => {
  */
 export const createOrder = async (planId: string): Promise<Order> => {
   try {
-    const response = await api.post<CreateOrderResponse>('/api/billing/create-order', {
+    const response = await api.post<CreateOrderResponse>('/billing/create-order', {
       planId,
     });
 
@@ -92,7 +92,7 @@ export const verifyPayment = async (
   signature: string
 ): Promise<VerifyPaymentResponse> => {
   try {
-    const response = await api.post<VerifyPaymentResponse>('/api/billing/verify-payment', {
+    const response = await api.post<VerifyPaymentResponse>('/billing/verify-payment', {
       orderId,
       paymentId,
       signature,
@@ -110,7 +110,7 @@ export const verifyPayment = async (
  */
 export const syncSubscription = async (): Promise<SyncSubscriptionResponse> => {
   try {
-    const response = await api.post<SyncSubscriptionResponse>('/api/billing/sync-subscription', {});
+    const response = await api.post<SyncSubscriptionResponse>('/billing/sync-subscription', {});
     return response.data;
   } catch (error) {
     console.error('Error syncing subscription:', error);
@@ -124,7 +124,7 @@ export const syncSubscription = async (): Promise<SyncSubscriptionResponse> => {
  */
 export const initializeBilling = async (): Promise<InitBillingResponse> => {
   try {
-    const response = await api.post<InitBillingResponse>('/api/billing/initialize', {});
+    const response = await api.post<InitBillingResponse>('/billing/initialize', {});
     return response.data;
   } catch (error) {
     console.error('Error initializing billing:', error);
