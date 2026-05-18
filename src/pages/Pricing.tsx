@@ -1,10 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { Check, Star } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import FAQ from "@/components/FAQ";
+import { useBilling } from "@/features/billing";
+import type { Plan } from "@/features/billing/types/billing.types";
 
-const PLANS = [
+// Fallback plans if API fails
+const FALLBACK_PLANS = [
   {
+    id: "starter",
     name: "Starter",
     imgSrc: "/Website-Images/Pricing-Images/starter.png",
     accentColor: "#2f80ff",
@@ -28,6 +32,7 @@ const PLANS = [
     btnFilled: false,
   },
   {
+    id: "pro",
     name: "Professional",
     imgSrc: "/Website-Images/Pricing-Images/professional.png",
     accentColor: "#a94cff",
@@ -53,6 +58,7 @@ const PLANS = [
     btnFilled: true,
   },
   {
+    id: "enterprise",
     name: "Enterprise",
     imgSrc: "/Website-Images/Pricing-Images/enterprise.png",
     accentColor: "#28dce8",
@@ -282,6 +288,35 @@ const PricingCard: React.FC<{
 };
 
 const Pricing: React.FC = () => {
+  const { billingStatus, isLoading } = useBilling();
+
+  // Convert plans from API to display format with styling
+  const displayPlans = useMemo(() => {
+    // Use API plans if available, otherwise use fallback
+    const plans = FALLBACK_PLANS;
+
+    // Try to enhance with actual plan data from API if available
+    if (billingStatus?.pricingTiers) {
+      return Object.entries(billingStatus.pricingTiers).map(([key, tier], index) => ({
+        ...plans[index], // Keep styling from fallback
+        name: tier.name,
+        price: tier.price === 0 ? "Free" : `$${tier.price}`,
+        isCustom: tier.name.toLowerCase() === "enterprise",
+        description: tier.name
+          ? {
+              free: "Perfect for getting started with real estate",
+              starter: "Perfect for individual agents getting started",
+              pro: "Recommended for growing teams",
+              professional: "Recommended for growing teams",
+              enterprise: "Custom solution for large organizations",
+            }[tier.name.toLowerCase()] || plans[index]?.description
+          : plans[index]?.description,
+      }));
+    }
+
+    return plans;
+  }, [billingStatus]);
+
   return (
     <div
       id="pricing"
@@ -407,7 +442,7 @@ const Pricing: React.FC = () => {
           className="pricing-grid mx-auto grid w-full grid-cols-1 items-end gap-5 lg:grid-cols-3 lg:gap-6"
           style={{ perspective: "2000px" }}
         >
-          {PLANS.map((plan, i) => (
+          {displayPlans.map((plan, i) => (
             <PricingCard
               key={plan.name}
               plan={plan}

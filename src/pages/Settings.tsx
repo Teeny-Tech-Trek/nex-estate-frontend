@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useSettingsLogic } from "@/Logics/useSettingsLogic";
 import DeleteAccountModal from '@/components/DeleteAccountModal';
 import { useToast } from "@/hooks/use-toast";
+import { BillingTabContent } from "@/features/billing/components/BillingTabContent";
 
 
 
@@ -668,47 +669,11 @@ const Settings: React.FC = () => {
 
         {/* ── BILLING TAB ─────────────────────────────────────────────── */}
         {activeTab === 'billing' && logic.isOrganizationUser && logic.billingInfo && (
-          <div className="space-y-8">
-            <div>
-              <SectionHeader color="from-emerald-500 to-green-500" title="Current Subscription" />
-              <div className="mt-5 bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 sm:p-6 lg:p-8">
-                <div className="flex items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1 capitalize">{logic.billingInfo.plan.name} Plan</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl sm:text-4xl font-bold text-white">${logic.billingInfo.plan.price}</span>
-                      <span className="text-slate-400">/month</span>
-                    </div>
-                  </div>
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
-                    <Crown className="w-7 h-7 text-white" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <UsageBar label="AI Agents" used={logic.billingInfo.usage.agents.used} limit={logic.billingInfo.usage.agents.limit} percent={logic.billingInfo.usage.agents.percent} gradient="from-blue-500 to-cyan-500" />
-                  <UsageBar label="Team Members" used={logic.billingInfo.usage.members.used} limit={logic.billingInfo.usage.members.limit} percent={logic.billingInfo.usage.members.percent} gradient="from-purple-500 to-pink-500" />
-                </div>
-              </div>
-            </div>
-
-            {logic.canManageBilling && (
-              <div>
-                <SectionHeader color="from-blue-500 to-cyan-500" title="Available Plans" />
-                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {Object.entries(logic.billingInfo.pricingTiers).map(([planKey, plan]) => (
-                    <PricingCard
-                      key={planKey}
-                      planKey={planKey}
-                      plan={plan}
-                      isCurrentPlan={logic.billingInfo!.plan.name === planKey}
-                      isEnterprise={planKey === 'enterprise'}
-                      onUpgrade={() => logic.handleUpdateSubscription(planKey)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <BillingTabContent
+            billingStatus={logic.billingInfo}
+            canManageBilling={logic.canManageBilling}
+            onUpgradeSuccess={() => logic.loadAllData()}
+          />
         )}
 
         {/* ── NOTIFICATIONS TAB ───────────────────────────────────────── */}
