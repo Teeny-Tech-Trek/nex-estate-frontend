@@ -27,7 +27,7 @@ export const useSignupForm = (initial?: Partial<SignupFormData>, onboardingToken
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { signup, refresh: refreshAuth } = useAuth();
 
   const features = [
     { 
@@ -94,8 +94,8 @@ export const useSignupForm = (initial?: Partial<SignupFormData>, onboardingToken
         if (response?.accessToken) {
           setCookie('accessToken', response.accessToken, 7);
         }
-        // Let AuthProvider refresh on next route load
-        navigate('/dashboard');
+        await refreshAuth();
+        navigate('/dashboard', { replace: true });
         return;
       }
 

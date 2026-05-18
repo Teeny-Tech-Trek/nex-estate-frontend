@@ -525,10 +525,12 @@
 
 import React, { useState } from "react";
 import {
-  Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Building2,
+  Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck,
   Loader2, CheckCircle2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 // ─────────────────────────────────────────────
 // Brand icons (lucide doesn't ship these)
@@ -558,19 +560,32 @@ const SignIn: React.FC = () => {
   const [remember, setRemember]   = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitError, setSubmitError] = useState("Something went wrong. Please check your credentials and try again.");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
+    setSubmitStatus("idle");
+    setSubmitError("Something went wrong. Please check your credentials and try again.");
     try {
       // 🛜 Replace with your real auth API call
-      await new Promise(r => setTimeout(r, 1400));
+      await login(email, password);
       setSubmitStatus("success");
-      setTimeout(() => setSubmitStatus("idle"), 3500);
-    } catch {
+      const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
+      window.setTimeout(() => {
+        navigate(from || "/dashboard", { replace: true });
+      }, 250);
+    } catch (error: unknown) {
+      const message = error instanceof Error
+        ? error.message
+        : "Something went wrong. Please check your credentials and try again.";
+      setSubmitError(message);
       setSubmitStatus("error");
-      setTimeout(() => setSubmitStatus("idle"), 3500);
+      window.setTimeout(() => setSubmitStatus("idle"), 3500);
     } finally {
       setIsSubmitting(false);
     }
@@ -891,7 +906,7 @@ const SignIn: React.FC = () => {
                   exit={{    opacity: 0, y: -8, height: 0 }}
                   className="text-sm rounded-xl px-4 py-3 bg-red-50 border border-red-200 text-red-600"
                 >
-                  Something went wrong. Please check your credentials and try again.
+                  {submitError}
                 </motion.div>
               )}
             </AnimatePresence>

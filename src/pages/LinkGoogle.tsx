@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { linkGoogleAccount } from '../services/api';
 import { setCookie } from '../lib/utils';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 const LinkGoogle: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const LinkGoogle: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { refresh } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,8 @@ const LinkGoogle: React.FC = () => {
     try {
       const res = await linkGoogleAccount({ linkToken, password });
       if (res?.accessToken) setCookie('accessToken', res.accessToken, 7);
-      navigate('/dashboard');
+      await refresh();
+      navigate('/dashboard', { replace: true });
     } catch (err: unknown) {
       console.error(err);
       toast({ title: 'Link failed', description: err instanceof Error ? err.message : 'Unable to link account', variant: 'destructive' });

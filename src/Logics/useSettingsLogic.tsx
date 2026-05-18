@@ -708,7 +708,7 @@ import {
 
 export const useSettingsLogic = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, refresh: refreshAuth } = useAuth();
 
   // ── Data State ───────────────────────────────────────────────────────────
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -922,6 +922,33 @@ export const useSettingsLogic = () => {
       toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
     }
   }, [isOwner, toast]);
+
+  const handleUpgradeToOrganization = useCallback(async () => {
+    if (!isIndividualUser) {
+      toast({
+        title: 'Permission Denied',
+        description: 'Only individual accounts can upgrade to an organization.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await apiService.upgradeToOrganization();
+      await refreshAuth();
+      toast({
+        title: 'Success',
+        description: 'Your account has been upgraded to an organization.',
+      });
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err?.response?.data?.error || err?.message || 'Failed to upgrade account',
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [isIndividualUser, refreshAuth, toast]);
 
   // ── Team Actions ─────────────────────────────────────────────────────────
   const handleInviteMember = useCallback(async () => {
@@ -1296,6 +1323,7 @@ export const useSettingsLogic = () => {
     handleUpdateProfile,
     handleUpdateOrganization,
     handleDeleteOrganization,
+    handleUpgradeToOrganization,
     handleInviteMember,
     handleRevokeInvite,
     handleRemoveMember,

@@ -544,6 +544,11 @@ class SettingsApiService {
     return res.data;
   }
 
+  async upgradeToOrganization(): Promise<{ message: string; organization: Organization }> {
+    const res = await api.post('/account/upgrade-to-organization');
+    return res.data;
+  }
+
   // ── Organization ─────────────────────────────────────────────────────────
   async getOrganization(): Promise<{ organization: Organization; usage: any }> {
     const res = await api.get('/settings/organization');

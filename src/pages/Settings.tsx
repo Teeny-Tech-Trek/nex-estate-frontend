@@ -269,6 +269,41 @@ const Settings: React.FC = () => {
               </div>
             </div>
 
+            {logic.isIndividualUser && (
+              <div className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 sm:p-6 lg:p-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="space-y-2">
+                    <SectionHeader color="from-emerald-500 to-cyan-500" title="Organization Upgrade" />
+                    <p className="text-sm text-slate-300 max-w-2xl">
+                      Upgrade your individual account to create and own an organization workspace.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setConfirmAction({
+                        title: "Upgrade to Organization",
+                        description:
+                          "Are you sure you want to upgrade your account to an organization account? This action cannot currently be reversed.",
+                        impacts: [
+                          "A new organization workspace will be created for your account.",
+                          "Your role will change from individual to owner.",
+                          "Your existing account, authentication, and settings will be preserved.",
+                        ],
+                        confirmLabel: "Yes, Upgrade",
+                        loadingLabel: "Upgrading account...",
+                        confirmTone: "success",
+                        onConfirm: () => logic.handleUpgradeToOrganization(),
+                      })
+                    }
+                    className="w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all font-semibold"
+                  >
+                    <Building2 className="w-4 h-4" />
+                    Upgrade to Organization
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Organization Info — for org users and members */}
             {(logic.isOrganizationUser || logic.user?.workingUnderOrganization) && (
               <div className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 sm:p-6 lg:p-8">

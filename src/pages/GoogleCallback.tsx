@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { exchangeGoogleCode } from '../services/api';
 import { setCookie } from '../lib/utils';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 const GoogleCallback: React.FC = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const [processing, setProcessing] = useState(true);
   const { toast } = useToast();
+  const { refresh } = useAuth();
 
   useEffect(() => {
     const run = async () => {
@@ -31,9 +33,9 @@ const GoogleCallback: React.FC = () => {
         }
 
         if (res.status === 'authenticated') {
-          // Server also sets HttpOnly refresh cookie. Store accessToken for client use and trigger app refresh by navigating.
           if (res.accessToken) setCookie('accessToken', res.accessToken, 7);
-          navigate('/dashboard');
+          await refresh();
+          navigate('/dashboard', { replace: true });
           return;
         }
 
@@ -67,7 +69,7 @@ const GoogleCallback: React.FC = () => {
       }
     };
     run();
-  }, [search, navigate, toast]);
+  }, [search, navigate, refresh, toast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
