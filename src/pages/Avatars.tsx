@@ -25,9 +25,12 @@ import {
 } from 'lucide-react';
 import useAgentsLogic from '../Logics/useAgentsLogic';
 import { Agent } from '@/types/agent';
+import api from '@/config/apiConfig';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Avatars() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const {
     agents,
     loading,
@@ -54,6 +57,8 @@ export default function Avatars() {
   const [formError, setFormError] = useState<string | null>(null);
   const [agentActionError, setAgentActionError] = useState<string | null>(null);
   const [actionAgent, setActionAgent] = useState<Agent | null>(null);
+  const fallbackMaxAgents = user?.accountType === 'organization' ? 2 : 1;
+  const [maxAgents, setMaxAgents] = useState(fallbackMaxAgents);
   const [formData, setFormData] = useState({
     name: '',
     personality: '',
@@ -77,8 +82,36 @@ export default function Avatars() {
     fetchAgents();
   }, [fetchAgents]);
 
+  useEffect(() => {
+    setMaxAgents(fallbackMaxAgents);
+  }, [fallbackMaxAgents]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchAgentLimit = async () => {
+      try {
+        const response = await api.get<{ plan?: { agentsLimit?: number } }>('/billing/status');
+        const planLimit = response.data?.plan?.agentsLimit;
+
+        if (isMounted && typeof planLimit === 'number' && planLimit > 0) {
+          setMaxAgents(planLimit);
+        }
+      } catch {
+        if (isMounted) {
+          setMaxAgents(fallbackMaxAgents);
+        }
+      }
+    };
+
+    fetchAgentLimit();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fallbackMaxAgents]);
+
   // ─── Derived stats ────────────────────────────────────────────────────────
-  const maxAgents = 5;
   const totalAgents = agents.length;
   const activeAgents = agents.filter((a) => a.status === 'active').length;
   const totalConversations = agents.reduce((sum, a) => sum + a.conversations, 0);
@@ -311,7 +344,7 @@ export default function Avatars() {
             <StatCard
               value={totalAgents.toLocaleString()}
               label="Total Agents"
-              sub={`${maxAgents - totalAgents} slots available`}
+              sub={`${Math.max(0, maxAgents - totalAgents)} slots available`}
             />
             <StatCard
               value={activeAgents.toLocaleString()}
@@ -416,7 +449,7 @@ export default function Avatars() {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-blue-100 font-semibold text-lg mb-1">
-                      {maxAgents - totalAgents} Agent Slots Available
+                      {Math.max(0, maxAgents - totalAgents)} Agent Slots Available
                     </h4>
                     <p className="text-blue-300/70 text-sm leading-relaxed">
                       You're currently using{' '}
