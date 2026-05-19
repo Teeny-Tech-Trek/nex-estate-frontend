@@ -7,7 +7,6 @@ import { fetchNotifications, markNotificationAsRead } from '@/services/notificat
 import { motion, AnimatePresence } from 'framer-motion';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import logoImg from "../imges/WhatsApp_Image_2025-11-05_at_5.37.53_PM-removebg-preview.png"
 import { 
   LayoutDashboard, 
   Users, 
@@ -128,7 +127,7 @@ const AppLayout = () => {
           {/* LEFT SECTION - Logo and Name */}
           <div className="flex items-center gap-2.5 min-w-fit">
             <div className="bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0" style={{ width: "clamp(36px, 3vw, 48px)", height: "clamp(36px, 3vw, 48px)" }}>
-              <img src={logoImg} alt="logo" className="w-full h-full object-contain" />
+              <img src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Logo.png" alt="logo" className="w-full h-full object-contain" />
             </div>
             <div className="hidden sm:block min-w-0">
               <h2 className="font-semibold text-white truncate" style={{ fontSize: "clamp(13px, 1.1vw, 17px)" }}>{userDisplayName}</h2>

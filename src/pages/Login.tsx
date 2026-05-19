@@ -617,7 +617,7 @@ const SignIn: React.FC = () => {
 
         {/* Background image — REPLACE this path with your own */}
         <img
-          src="/Website-Images/LoginImage.png"
+          src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/LoginImage.png"
           alt="Modern luxury home"
           draggable={false}
           onContextMenu={(e) => e.preventDefault()}

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
-import eStateVideo from "../imges/ai agent final animation video.mp4"
 
 const ImageShowcaseSection = () => {
   const videoRef = useRef(null);
@@ -214,7 +213,7 @@ const ImageShowcaseSection = () => {
                     loop
                     playsInline
                     preload="metadata"
-                    src={shouldLoadVideo ? eStateVideo : undefined}
+                    src={shouldLoadVideo ? "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/ai%20agent%20final%20animation%20video.mp4" : undefined}
                   >
                     Your browser does not support the video tag.
                   </video>

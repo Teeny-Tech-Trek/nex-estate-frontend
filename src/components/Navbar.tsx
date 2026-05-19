@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
-import LogoImg from "../imges/WhatsApp_Image_2025-11-05_at_5.37.53_PM-removebg-preview.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +98,7 @@ const Navbar = () => {
                 border: "1.5px solid rgba(255,255,255,0.18)",
               }}
             >
-              <img src={LogoImg} alt="logo" className="object-contain" style={{ width: "70%", height: "70%" }} />
+              <img src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Logo.png" alt="logo" className="object-contain" style={{ width: "70%", height: "70%" }} />
             </div>
             <div className="flex flex-col leading-none">
               <span

@@ -6,7 +6,7 @@ import { motion, useMotionValue, useSpring, useTransform, PanInfo } from "framer
 // ─────────────────────────────────────────────
 const FEATURES = [
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/avatar-management.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/avatar-management.png",
     imgAlt:      "Avatar Management 3D",
     accentColor: "#7c5cbf",
     cardBorder:  "rgba(124,92,191,0.30)",
@@ -22,7 +22,7 @@ const FEATURES = [
     description: "Create and customize AI avatars with unique appearances, voices, scripts, and availability. Preview and deploy in minutes.",
   },
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/lead-capture.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/lead-capture.png",
     imgAlt:      "Lead Capture 3D",
     accentColor: "#3b82f6",
     cardBorder:  "rgba(59,130,246,0.28)",
@@ -37,7 +37,7 @@ const FEATURES = [
     description: "Web chat widget with voice/video calling via WebRTC. Your avatars engage visitors 24/7 with agent takeover when needed.",
   },
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/property-management.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/property-management.png",
     imgAlt:      "Property Management 3D",
     accentColor: "#06b6d4",
     cardBorder:  "rgba(6,182,212,0.28)",
@@ -52,7 +52,7 @@ const FEATURES = [
     description: "Add properties with images, specs, prices, floor plans, and 3D/AR assets. Create stunning property pages with lead attribution.",
   },
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/smart-scheduling.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/smart-scheduling.png",
     imgAlt:      "Smart Scheduling 3D",
     accentColor: "#7c3aed",
     cardBorder:  "rgba(124,58,237,0.30)",
@@ -70,7 +70,7 @@ const FEATURES = [
     description: "Integrated calendar booking with Google/iCal sync. Automated reminders via email, SMS, and WhatsApp keep prospects engaged.",
   },
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/crm-integration.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/crm-integration.png",
     imgAlt:      "CRM Integration 3D",
     accentColor: "#6366f1",
     cardBorder:  "rgba(99,102,241,0.30)",
@@ -86,7 +86,7 @@ const FEATURES = [
     description: "Two-way sync with HubSpot, Salesforce, Zoho, and proptech APIs. OAuth authentication with webhook-based lead attribution.",
   },
   {
-    imgSrc:      "/Website-Images/Features-Section-Images/analytics-commission.png",
+    imgSrc:      "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Features-Section-Images/analytics-commission.png",
     imgAlt:      "Analytics & Commission 3D",
     accentColor: "#10b981",
     cardBorder:  "rgba(16,185,129,0.28)",

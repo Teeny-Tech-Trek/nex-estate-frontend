@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Building2, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
-import LogoImg from "../imges/WhatsApp_Image_2025-11-05_at_5.37.53_PM-removebg-preview.png";
+
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
                   border: "1.5px solid rgba(255,255,255,0.18)",
                 }}
               >
-                <img src={LogoImg} alt="NexEstate logo" className="h-7 w-7 object-contain" />
+                <img src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Logo.png" alt="NexEstate logo" className="h-7 w-7 object-contain" />
               </div>
               <div className="leading-none">
                 <div className="font-black tracking-tight text-white" style={{ fontSize: "clamp(1.1rem,1.8vw,1.25rem)" }}>

@@ -10,7 +10,7 @@ const FALLBACK_PLANS = [
   {
     id: "starter",
     name: "Starter",
-    imgSrc: "/Website-Images/Pricing-Images/starter.png",
+    imgSrc: "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Pricing-Images/starter.png",
     accentColor: "#2f80ff",
     borderColor: "rgba(47,128,255,0.74)",
     cardGlow: "0 0 42px rgba(47,128,255,0.26)",
@@ -34,7 +34,7 @@ const FALLBACK_PLANS = [
   {
     id: "pro",
     name: "Professional",
-    imgSrc: "/Website-Images/Pricing-Images/professional.png",
+    imgSrc: "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Pricing-Images/professional.png",
     accentColor: "#a94cff",
     borderColor: "rgba(169,76,255,0.88)",
     cardGlow: "0 0 56px rgba(169,76,255,0.44)",
@@ -60,7 +60,7 @@ const FALLBACK_PLANS = [
   {
     id: "enterprise",
     name: "Enterprise",
-    imgSrc: "/Website-Images/Pricing-Images/enterprise.png",
+    imgSrc: "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/Pricing-Images/enterprise.png",
     accentColor: "#28dce8",
     borderColor: "rgba(40,220,232,0.74)",
     cardGlow: "0 0 42px rgba(40,220,232,0.28)",

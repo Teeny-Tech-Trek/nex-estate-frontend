@@ -494,7 +494,7 @@ const ContactUs: React.FC = () => {
             <div className="cu-illust">
               <div className="cu-arch" />
               <img
-                src="/Website-Images/ContactUsImage.png"
+                src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/ContactUsImage.png"
                 alt="Contact illustration"
                 draggable={false}
                 onContextMenu={(e) => e.preventDefault()}

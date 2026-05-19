@@ -6,9 +6,6 @@ import {
 import { useEffect, useState } from "react";
 import React from "react";
 
-// ── import your hero image here ──
-import HeroImg from "/Website-Images/HeroPage-House.png";
-
 
 // ─────────────────────────────────────────────
 // Constants
@@ -635,7 +632,7 @@ const Hero = () => {
                 className="lg:absolute lg:top-[18%]  lg:-translate-x-1/2 lg:w-[86%] w-full lg:z-[15] relative"
               >
                 <img
-                  src={HeroImg}
+                  src="https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/HeroPage-House.png"
                   alt="AI Real Estate Hero"
                   loading="eager"
                   decoding="sync"
