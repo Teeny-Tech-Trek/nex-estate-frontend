@@ -69,10 +69,32 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Clear cookies and redirect to login on refresh failure
+        // Clear cookies on refresh failure
         eraseCookie('accessToken');
         eraseCookie('refreshToken');
-        window.location.href = '/login';
+
+        // Only redirect to /login when the user is on a protected route.
+        // Public routes (/, /login, /signup, /pricing, /forgot-password,
+        // /reset-password, /accept-invite, /agent/:id) should stay put so the
+        // landing page renders normally on first load.
+        const publicPathPrefixes = [
+          '/login',
+          '/signup',
+          '/pricing',
+          '/forgot-password',
+          '/reset-password',
+          '/accept-invite',
+          '/agent/',
+          '/auth/google',
+        ];
+        const pathname = window.location.pathname;
+        const isPublic =
+          pathname === '/' ||
+          publicPathPrefixes.some((p) => pathname.startsWith(p));
+
+        if (!isPublic) {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }
