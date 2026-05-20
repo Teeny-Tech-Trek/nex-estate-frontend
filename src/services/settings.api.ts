@@ -640,7 +640,7 @@ class SettingsApiService {
 
   // ── Billing ───────────────────────────────────────────────────────────────
   async getBillingInfo(): Promise<BillingInfo> {
-    const res = await api.get('/settings/billing');
+    const res = await api.get('/billing/status');
     return res.data;
   }
 

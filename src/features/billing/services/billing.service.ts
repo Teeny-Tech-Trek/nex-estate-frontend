@@ -23,7 +23,7 @@ import type {
  */
 export const getBillingStatus = async (): Promise<BillingStatus> => {
   try {
-    const response = await api.get<BillingStatus>('/settings/billing');
+    const response = await api.get<BillingStatus>('/billing/status');
     return response.data;
   } catch (error) {
     console.error('Error fetching billing status:', error);
@@ -37,7 +37,7 @@ export const getBillingStatus = async (): Promise<BillingStatus> => {
  */
 export const getBillingInfo = async (): Promise<BillingInfo> => {
   try {
-    const response = await api.get<BillingInfo>('/settings/billing');
+    const response = await api.get<BillingInfo>('/billing/status');
     return response.data;
   } catch (error) {
     console.error('Error fetching billing info:', error);
@@ -51,8 +51,8 @@ export const getBillingInfo = async (): Promise<BillingInfo> => {
  */
 export const getPlans = async (): Promise<Plan[]> => {
   try {
-    const response = await api.get<Plan[]>('/billing/plans');
-    return response.data;
+    const response = await api.get<{ success: boolean; plans: Plan[] }>('/billing/plans');
+    return response.data?.plans || [];
   } catch (error) {
     console.error('Error fetching plans:', error);
     throw error;
