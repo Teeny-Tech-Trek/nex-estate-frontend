@@ -6,7 +6,7 @@ import { Building2, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
+  // { label: "Pricing", href: "#pricing" },
   { label: "Dashboard", href: "#dashboard" },
 ];
 

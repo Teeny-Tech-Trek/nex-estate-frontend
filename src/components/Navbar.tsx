@@ -54,7 +54,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/", active: true },
     { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
+    // { label: "Pricing", href: "#pricing" },
     { label: "Contact Us", href: "#contactUs" },
     // { label: "Resources", href: "#resources", dropdown: true },
   ];

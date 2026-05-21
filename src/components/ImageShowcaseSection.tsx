@@ -218,23 +218,6 @@ const ImageShowcaseSection = () => {
                     Your browser does not support the video tag.
                   </video>
 
-                  {/* Live Badge */}
-                  <motion.div
-                    className="absolute top-4 right-4 px-4 py-2 rounded-full backdrop-blur-md z-20"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)'
-                    }}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, type: "spring" }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                      <span className="text-xs font-bold text-slate-800">LIVE DEMO</span>
-                    </div>
-                  </motion.div>
-
                   {/* Custom Controls - Always visible */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {/* Progress Bar */}
