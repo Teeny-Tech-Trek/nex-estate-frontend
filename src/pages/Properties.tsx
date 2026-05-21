@@ -121,7 +121,7 @@ const Properties: React.FC = () => {
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-8 mb-6 lg:mb-10">
             <div className="space-y-1.5 min-w-0">
               <p className="uppercase tracking-[0.18em] text-blue-400/70 font-medium" style={{ fontSize: "clamp(10px, 0.75vw, 12px)" }}>{scopeLabel}</p>
-              <h1 className="font-bold text-white tracking-tight" style={{ fontSize: "clamp(1.8rem, 4vw, 3.4rem)" }}>Properties</h1>
+              <h1 className="font-bold font-syne-bold text-white tracking-tight" style={{ fontSize: "clamp(1.8rem, 4vw, 3.4rem) " }}>Properties</h1>
               <p className="text-slate-400" style={{ fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)" }}>Manage your real estate portfolio</p>
             </div>
 

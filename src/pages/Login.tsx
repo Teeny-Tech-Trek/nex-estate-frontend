@@ -663,13 +663,13 @@ const SignIn: React.FC = () => {
 
           {/* Welcome text */}
           <div className="mt-16 xl:mt-20 max-w-md">
-            <h1 className="text-4xl xl:text-[44px] font-extrabold leading-[1.1] tracking-tight">
+            <h1 className="text-4xl xl:text-[44px] font-extrabold leading-[1.1] tracking-tight font-syne-bold">
               Welcome Back
             </h1>
-            <h2 className="text-3xl xl:text-[34px] font-extrabold leading-[1.15] tracking-tight mt-2">
+            <h2 className="text-3xl xl:text-[34px] font-extrabold leading-[1.15] tracking-tight mt-2 font-syne-bold">
               Sign in to your account
             </h2>
-            <p className="mt-5 text-[15px] xl:text-base leading-relaxed text-white/80 max-w-sm">
+            <p className="mt-5 text-[15px] xl:text-base leading-relaxed text-white/80 max-w-sm ">
               Access your dashboard, manage properties,
               and grow your real estate business.
             </p>

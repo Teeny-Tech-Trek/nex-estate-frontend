@@ -144,9 +144,9 @@ const SpecsSection = () => {
             >
               <h2 className="landing-title"
                 style={{ textShadow:"0 8px 40px rgba(0,0,0,0.5)" }}>
-                <span className="font-heading text-white">Built to </span>
+                <span className="font-heading text-white font-syne-bold">Built to </span>
                 <br />
-                <span className="font-heading"
+                <span className="font-heading font-syne-bold"
                  style={{
                   background: "linear-gradient(90deg,#818CF8 0%,#60A5FA 50%,#a78bfa 100%)",
                   WebkitBackgroundClip: "text",

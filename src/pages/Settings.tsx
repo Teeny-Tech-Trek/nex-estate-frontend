@@ -112,7 +112,7 @@ const Settings: React.FC = () => {
         <div className="mb-6 lg:mb-10">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-6 mb-6 lg:mb-10">
             <div className="space-y-1.5 min-w-0">
-              <h1 className="font-bold text-white tracking-tight" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.8rem)" }}>Settings</h1>
+              <h1 className="font-bold font-syne-bold text-white  tracking-tight" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.8rem)" }}>Settings</h1>
               <p className="text-slate-400" style={{ fontSize: "clamp(0.85rem, 1.1vw, 1rem)" }}>
                 {logic.isOrganizationUser
                   ? 'Manage your organization, team, and preferences'

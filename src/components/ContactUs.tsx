@@ -106,8 +106,8 @@ const ContactUs: React.FC = () => {
           margin-bottom: 20px;
         }
         .cu-h1 {
-          font-weight: 800;
-          font-size: clamp(2.4rem, 4vw, 3.8rem);
+          font-weight: 600;
+          font-size: clamp(2.4rem, 4vw, 3.1rem);
           line-height: 1.08;
           color: white;
           margin-bottom: 18px;
@@ -116,7 +116,7 @@ const ContactUs: React.FC = () => {
         }
         .cu-h1 .grad {
           background: linear-gradient(90deg,#22d3ee 0%,#7dd3fc 25%,#a78bfa 70%,#c084fc 100%);
-          background-size: 200% 100%;
+          background-size: 100% 80%;
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -479,9 +479,9 @@ const ContactUs: React.FC = () => {
           >
             <span className="cu-badge">Get in Touch</span>
 
-            <h2 className="cu-h1">
+            <h2 className="cu-h1 font-syne ">
               We&apos;re Here to Help You Find Your {" "} <br />
-              <span className="grad"> Next Estate.</span>
+              <span className="grad font-syne "> Next Estate.</span>
             </h2>
 
             {/* <p className="cu-lede">

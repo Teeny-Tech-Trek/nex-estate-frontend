@@ -514,9 +514,9 @@ const Hero = () => {
               transition={{ duration: 1.4, ease: "easeOut", delay: 0.2 }}
             >
               <h1 className="hero-font font-black leading-[1.06]" style={{ fontSize: "clamp(3.5rem, 5.4vw, 6.2rem)" }}>
-                <span className="font-heading block font-bold text-white">AI Agents for</span>
+                <span className="font-heading block font-bold text-white font-syne-bold">AI Agents for</span>
                 <span
-                  className="font-heading font-bold block mt-1 bg-clip-text text-transparent"
+                  className="font-heading font-bold block mt-1 bg-clip-text text-transparent font-syne-bold"
                   style={{
                     background: "linear-gradient(90deg,#a78bfa,#60a5fa,#a78bfa)",
                     backgroundSize: "200%",

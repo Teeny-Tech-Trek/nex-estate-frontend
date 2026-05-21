@@ -265,11 +265,11 @@ const Signup: React.FC = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
                 Powerful Features
               </div>
-              <h1 className="text-3xl xl:text-[38px] font-extrabold leading-[1.1] tracking-tight">
+              <h1 className="text-3xl xl:text-[38px] font-extrabold leading-[1.1] tracking-tight font-syne-bold">
                 Everything you need
               </h1>
               <h2
-                className="text-3xl xl:text-[38px] font-extrabold leading-[1.15] tracking-tight"
+                className="text-3xl xl:text-[38px] font-extrabold leading-[1.15] tracking-tight font-syne-bold"
                 style={{
                   background:           "linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#a78bfa 100%)",
                   WebkitBackgroundClip: "text",

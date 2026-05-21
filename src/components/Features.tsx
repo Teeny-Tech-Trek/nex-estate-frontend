@@ -446,8 +446,8 @@ const Features: React.FC = () => {
             className="hf landing-title mb-3"
             style={{ textShadow: "0 10px 40px rgba(0,0,0,0.50)" }}
           >
-            <span className="text-white">Everything You Need to</span>{" "}
-            <span
+            <span className="text-white font-syne-bold">Everything You Need to</span>{" "}
+            <span className="text-transparent font-syne-bold"
               style={{
                 background:          "linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#a78bfa 100%)",
                 backgroundSize:      "200%",

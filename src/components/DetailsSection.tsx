@@ -310,9 +310,9 @@ const DetailSection: React.FC = () => {
           </div>
 
           <h2 className="hero-font landing-title">
-            <span className="font-heading text-white">Everything You Need to </span>
+            <span className="font-heading text-white font-syne-bold ">Everything You Need to </span>
             <span
-            className="font-heading"
+            className="font-heading font-syne-bold "
               style={{
                 background: "linear-gradient(90deg,#a78bfa,#60a5fa,#a78bfa)",
                 backgroundSize: "200%",

@@ -302,7 +302,7 @@ export default function Avatars() {
         <div className="mb-6 sm:mb-10">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6 mb-6 sm:mb-10">
             <div className="space-y-2 min-w-0">
-              <h1 className="font-bold text-white tracking-tight" style={{ fontSize: "clamp(1.8rem, 4vw, 3.4rem)" }}>AI Agents</h1>
+              <h1 className="font-bold font-syne-bold text-white tracking-tight" style={{ fontSize: "clamp(1.8rem, 4vw, 3.4rem)" }}>AI Agents</h1>
               <p className="text-slate-400" style={{ fontSize: "clamp(0.85rem, 1.2vw, 1.1rem)" }}>Intelligent automation for your sales team</p>
             </div>
 

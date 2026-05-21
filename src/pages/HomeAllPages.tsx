@@ -52,10 +52,10 @@ const Index = () => {
         {/* <HumanoidSection /> */}
         <Features />
         <DetailsSection />
-        {/* <ImageShowcaseSection /> */}
+        <ImageShowcaseSection />
         <SpecsSection />
         {/* <Testimonials /> */}
-        <Pricing />
+        {/* <Pricing /> */}
         <ContactUs />
         {/* <Newsletter /> */}
         {/* <MadeByHumans /> */}

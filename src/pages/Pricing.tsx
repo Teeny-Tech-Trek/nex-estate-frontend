@@ -409,8 +409,8 @@ const Pricing: React.FC = () => {
             className="hf landing-title mx-auto max-w-[1100px] text-center text-white"
             style={{ textShadow: "0 7px 26px rgba(0,0,0,0.55)" }}
           >
-            <span>Choose the Plan That</span>{" "}
-            <span
+            <span className="font-syne-bold">Choose the Plan That</span>{" "}
+            <span className="font-syne-bold"
               style={{
                 background:
                   "linear-gradient(90deg,#d25dff 0%,#8c55ff 43%,#35c9ff 100%)",

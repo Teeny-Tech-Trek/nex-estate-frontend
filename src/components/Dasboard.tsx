@@ -72,7 +72,7 @@ const Dashboard = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="min-w-0">
-              <h1 className="font-bold text-white mb-1 truncate" style={{ fontSize: "clamp(1.4rem, 2.4vw, 2rem)" }}>
+              <h1 className="font-bold font-syne-bold text-white mb-1 truncate" style={{ fontSize: "clamp(1.4rem, 2.4vw, 2rem)" }}>
                 Welcome back, {headerInfo.userName}
               </h1>
               <p className="text-slate-400" style={{ fontSize: "clamp(0.85rem, 1.1vw, 1rem)" }}>

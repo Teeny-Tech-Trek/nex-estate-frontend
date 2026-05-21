@@ -174,9 +174,9 @@ const ImageShowcaseSection = () => {
               <span className="text-sm font-semibold text-blue-300">AI-Powered Demo</span>
             </motion.div>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight font-syne-bold">
               See Your Virtual Agent
-              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mt-2">
+              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mt-2 font-syne-bold">
                 in Action
               </span>
             </h2>
@@ -213,7 +213,7 @@ const ImageShowcaseSection = () => {
                     loop
                     playsInline
                     preload="metadata"
-                    src={shouldLoadVideo ? "https://4ssqc15iraz2fnfu.public.blob.vercel-storage.com/ai%20agent%20final%20animation%20video.mp4" : undefined}
+                    src={shouldLoadVideo ? "/nexestatevideo.mp4" : undefined}
                   >
                     Your browser does not support the video tag.
                   </video>
