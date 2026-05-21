@@ -567,15 +567,24 @@ const Hero = () => {
                 <ArrowRight style={{ width: "clamp(16px, 1.3vw, 22px)", height: "clamp(16px, 1.3vw, 22px)" }} />
               </motion.a>
 
-              <motion.a
-                href="#showcase"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("showcase")?.scrollIntoView({ behavior: "smooth" });
+              <motion.button
+                onClick={() => {
+                  const element = document.getElementById("showcase");
+                  if (element) {
+                    const elementTop = element.getBoundingClientRect().top + window.scrollY;
+                    const elementHeight = element.getBoundingClientRect().height;
+                    const viewportHeight = window.innerHeight;
+                    const scrollTarget = elementTop - (viewportHeight - elementHeight) / 2 + 80;
+                    
+                    window.scrollTo({
+                      top: scrollTarget,
+                      behavior: "smooth"
+                    });
+                  }
                 }}
                 whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.10)" }}
                 whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center justify-center gap-2.5 rounded-full font-semibold text-white body-font border-2 border-white/25 bg-white/[0.05]"
+                className="inline-flex items-center justify-center gap-2.5 rounded-full font-semibold text-white body-font border-2 border-white/25 bg-white/[0.05] cursor-pointer"
                 style={{ padding: "clamp(13px, 1.35vw, 18px) clamp(22px, 2.4vw, 36px)", fontSize: "clamp(1rem, 1.2vw, 1.2rem)" }}
               >
                 <span
@@ -587,7 +596,7 @@ const Hero = () => {
                   </svg>
                 </span>
                 Watch Demo
-              </motion.a>
+              </motion.button>
             </motion.div>
           </div>
 
