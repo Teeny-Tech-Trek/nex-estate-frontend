@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Features", href: "#features" },
   // { label: "Pricing", href: "#pricing" },
-  { label: "Dashboard", href: "#dashboard" },
+  // { label: "Dashboard", href: "#dashboard" },
 ];
 
 const SOLUTIONS = ["Lead capture", "AI avatar agents", "Property support", "CRM integrations"];
