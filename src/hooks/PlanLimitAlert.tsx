@@ -1,11 +1,12 @@
 // src/components/PlanLimitAlert.tsx
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle,  Users, Bot, Home, Plug } from "lucide-react";
+import { AlertTriangle, Users, Bot, Home, Plug, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface PlanLimitAlertProps {
-  type: 'agent' | 'property' | 'team';
+  // 'message' = monthly chat-message quota exhausted (added in 4-tier launch)
+  type: 'agent' | 'property' | 'team' | 'message';
   current: number;
   limit: number;
   planName: string;
@@ -39,6 +40,13 @@ export const PlanLimitAlert: React.FC<PlanLimitAlertProps> = ({
           description: `You've reached the maximum number of team members (${limit}) on your ${planName} plan.`,
           icon: Users,
           upgradeText: 'Upgrade to invite more team members'
+        };
+      case 'message':
+        return {
+          title: 'Chat Message Limit Reached',
+          description: `You've used all ${limit} chat messages this month on your ${planName} plan. Your AI agents are paused until you upgrade or your quota renews.`,
+          icon: MessageSquare,
+          upgradeText: 'Upgrade for more messages'
         };
       default:
         return {

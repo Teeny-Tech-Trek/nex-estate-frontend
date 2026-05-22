@@ -5,7 +5,7 @@ import { PlanLimitAlert } from './PlanLimitAlert';
 import { Loader2 } from 'lucide-react';
 
 interface PlanLimitGuardProps {
-  type: 'agent' | 'property' | 'team';
+  type: 'agent' | 'property' | 'team' | 'message';
   children: ReactNode;
   fallback?: ReactNode;
 }
@@ -16,7 +16,11 @@ export const PlanLimitGuard: React.FC<PlanLimitGuardProps> = ({
   fallback
 }) => {
   const limits = usePlanLimits();
-  const limitKey = type === 'team' ? 'teamMembers' : type === 'agent' ? 'agents' : 'properties';
+  const limitKey =
+    type === 'team' ? 'teamMembers'
+    : type === 'agent' ? 'agents'
+    : type === 'message' ? 'messages'
+    : 'properties';
 
   if (limits.isLoading) {
     return (

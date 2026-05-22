@@ -124,6 +124,27 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ billingStatus,
             </div>
           </div>
         )}
+
+        {/* Chat Messages — per-month quota. Hidden when unlimited (limit=-1). */}
+        {usage?.messages && usage.messages.limit !== -1 && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-orange-400" />
+                <span className="text-slate-300">Chat Messages / month</span>
+              </div>
+              <span className="text-white font-semibold">
+                {usage.messages.used || 0} / {usage.messages.limit || 0}
+              </span>
+            </div>
+            <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full transition-all"
+                style={{ width: `${Math.min(usage.messages.percent || 0, 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Plan Details */}

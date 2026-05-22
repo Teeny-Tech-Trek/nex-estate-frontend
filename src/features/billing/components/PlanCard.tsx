@@ -12,14 +12,31 @@ interface PlanCardProps {
   plan: Plan;
   currentPlanName?: string;
   onUpgradeSuccess?: () => void;
+  userEmail?: string;
+  userName?: string;
 }
+
+/**
+ * Format a paise-denominated price as ₹X (whole rupees). The backend always
+ * sends prices in paise — both from TTT (DB) and from local PLAN_FEATURES.
+ */
+const formatPrice = (priceInPaise: number) =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+  }).format((priceInPaise || 0) / 100);
 
 export const PlanCard: React.FC<PlanCardProps> = ({
   plan,
   currentPlanName,
   onUpgradeSuccess,
+  userEmail,
+  userName,
 }) => {
   const isCurrentPlan = currentPlanName?.toLowerCase() === plan.name.toLowerCase();
+  const isContactOnly = !!plan.isContactOnly || !!plan.isCustom;
+  const isFreePlan = (plan.slug || plan.name).toLowerCase() === 'free';
 
   return (
     <div
@@ -56,14 +73,18 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         {/* Plan Name & Price */}
         <div className="mb-6">
           <h3 className="text-2xl font-bold text-white capitalize mb-2">{plan.name}</h3>
-          {plan.isCustom ? (
+          {isContactOnly ? (
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-cyan-400">Custom</span>
               <span className="text-slate-400 text-sm">Talk to our team</span>
             </div>
+          ) : isFreePlan || plan.price === 0 ? (
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-bold text-white">Free</span>
+            </div>
           ) : (
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-white">${plan.price}</span>
+              <span className="text-4xl font-bold text-white">{formatPrice(plan.price)}</span>
               <span className="text-slate-400">/month</span>
             </div>
           )}
@@ -84,19 +105,35 @@ export const PlanCard: React.FC<PlanCardProps> = ({
           ))}
         </div>
 
-        {/* Plan Details Grid */}
-        <div className="grid grid-cols-3 gap-3 mb-8 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
+        {/* Plan Details Grid — renders 'Unlimited' for any -1 value so the
+            Enterprise tier reads correctly. Messages cell is added in the
+            4-tier launch; falls back gracefully when missing. */}
+        <div className="grid grid-cols-2 gap-3 mb-8 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
           <div className="text-center">
-            <p className="text-slate-500 text-xs mb-1">Team</p>
-            <p className="font-bold text-white">{plan.seats}</p>
+            <p className="text-slate-500 text-xs mb-1">Messages / mo</p>
+            <p className="font-bold text-white">
+              {plan.messagesLimit === -1 || plan.messagesLimit == null
+                ? 'Unlimited'
+                : plan.messagesLimit.toLocaleString('en-IN')}
+            </p>
           </div>
-          <div className="text-center border-l border-r border-slate-700/50">
-            <p className="text-slate-500 text-xs mb-1">Agents</p>
-            <p className="font-bold text-white">{plan.agentsLimit}</p>
+          <div className="text-center border-l border-slate-700/50">
+            <p className="text-slate-500 text-xs mb-1">AI Agents</p>
+            <p className="font-bold text-white">
+              {plan.agentsLimit === -1 ? 'Unlimited' : plan.agentsLimit}
+            </p>
           </div>
           <div className="text-center">
             <p className="text-slate-500 text-xs mb-1">Properties</p>
-            <p className="font-bold text-white">{plan.propertiesLimit}</p>
+            <p className="font-bold text-white">
+              {plan.propertiesLimit === -1 ? 'Unlimited' : plan.propertiesLimit}
+            </p>
+          </div>
+          <div className="text-center border-l border-slate-700/50">
+            <p className="text-slate-500 text-xs mb-1">Team Seats</p>
+            <p className="font-bold text-white">
+              {plan.seats === -1 ? 'Unlimited' : plan.seats}
+            </p>
           </div>
         </div>
 
@@ -104,9 +141,13 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         <UpgradeButton
           planId={plan.id}
           planName={plan.name}
+          planSlug={plan.slug}
           currentPlan={currentPlanName}
           onUpgradeSuccess={onUpgradeSuccess}
           disabled={isCurrentPlan}
+          isContactOnly={isContactOnly}
+          userEmail={userEmail}
+          userName={userName}
           className="w-full"
         />
       </div>

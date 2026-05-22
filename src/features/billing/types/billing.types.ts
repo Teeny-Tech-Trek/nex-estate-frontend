@@ -6,15 +6,24 @@
 // ── Plan & Pricing ───────────────────────────────────────────────────
 export interface Plan {
   id: string;
+  slug?: string;
   name: string;
   price: number;
+  currency?: string;
+  durationDays?: number;
   seats: number;
   agentsLimit: number;
   propertiesLimit: number;
-  description: string;
+  // Per-month chat-message quota. -1 means unlimited. Optional so legacy
+  // payloads that predate the field deserialize without errors.
+  messagesLimit?: number;
+  description?: string;
   features: string[];
   isPopular?: boolean;
   isCustom?: boolean;
+  // True for the Enterprise tier — UI renders a "Contact sales" CTA
+  // instead of the Razorpay checkout flow.
+  isContactOnly?: boolean;
 }
 
 export interface PricingTier {
@@ -29,10 +38,13 @@ export interface PricingTier {
 // ── Organization Subscription ────────────────────────────────────────
 export interface Subscription {
   status: 'inactive' | 'active' | 'trial' | 'expired' | 'cancelled' | 'payment_failed';
-  centralBillingCustomerId: string;
-  currentPeriodEnd: string; // ISO date
-  planId: string;
-  lastSyncedAt: string; // ISO date
+  isActive?: boolean;
+  centralBillingCustomerId?: string;
+  centralCustomerId?: string;
+  currentPeriodStart?: string | null;
+  currentPeriodEnd: string | null;
+  planId?: string | null;
+  lastSyncedAt?: string | null;
 }
 
 // ── Billing Status & Usage ───────────────────────────────────────────
@@ -45,15 +57,20 @@ export interface UsageMetric {
 export interface BillingStatus {
   plan: {
     name: string;
+    slug?: string;
     seats: number;
     agentsLimit: number;
     propertiesLimit: number;
+    messagesLimit?: number;
     price: number;
+    isContactOnly?: boolean;
   };
   usage: {
     agents: UsageMetric;
     members: UsageMetric;
     properties?: UsageMetric;
+    // New in 4-tier launch: messages per month.
+    messages?: UsageMetric;
   };
   pricingTiers: {
     [key: string]: PricingTier;

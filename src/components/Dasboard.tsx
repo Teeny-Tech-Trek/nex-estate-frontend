@@ -21,19 +21,28 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useDashboardLogic } from '../Logics/useDashboardLogic';
+import { usePlanLimits } from '../hooks/usePlanLimits';
+import { PlanLimitAlert } from '../hooks/PlanLimitAlert';
 
 const Dashboard = () => {
-  const { 
-    headerInfo, 
-    kpiMetrics, 
-    leadsData, 
-    conversionData, 
-    recentActivities, 
+  const {
+    headerInfo,
+    kpiMetrics,
+    leadsData,
+    conversionData,
+    recentActivities,
     topAgents,
     loading,
     error,
     refreshDashboard,
   } = useDashboardLogic();
+
+  // Surface a banner when the org has hit its monthly chat-message limit.
+  // The hook reads /api/billing/status, so the alert reflects the real
+  // server-side counter — not optimistic UI state.
+  const planLimits = usePlanLimits();
+  const messagesAtLimit =
+    !planLimits.isLoading && planLimits.isAtLimit?.messages;
 
   const safeTotalVisits = conversionData.totalVisits > 0 ? conversionData.totalVisits : 1;
   const conversionStroke = Math.min(
@@ -85,6 +94,20 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Quota-exceeded banner — only renders when the org has used its
+            full monthly chat-message allowance. Click-through goes to the
+            settings/billing page (PlanLimitAlert handles that internally). */}
+        {messagesAtLimit && (
+          <div className="mb-6">
+            <PlanLimitAlert
+              type="message"
+              current={planLimits.messages.used}
+              limit={planLimits.messages.limit}
+              planName={planLimits.planName}
+            />
+          </div>
+        )}
 
         {/* KPI Metrics Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">

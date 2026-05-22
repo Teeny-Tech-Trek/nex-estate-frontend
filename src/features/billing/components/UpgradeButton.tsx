@@ -8,26 +8,46 @@ import { useToast } from '../../../hooks/use-toast';
 import * as razorpayUtils from '../utils/razorpay';
 import * as billingService from '../services/billing.service';
 import type { RazorpayPaymentResponse } from '../types/billing.types';
+import { isPaymentsDisabledError } from '@/config/paymentToggle';
+import PaymentsDisabledModal from './PaymentsDisabledModal';
 
 interface UpgradeButtonProps {
   planId: string;
   planName: string;
+  planSlug?: string;
   currentPlan?: string;
   onUpgradeSuccess?: () => void;
   className?: string;
   disabled?: boolean;
+  // Enterprise tier — no Razorpay flow; clicking opens a mailto to sales.
+  isContactOnly?: boolean;
+  userEmail?: string;
+  userName?: string;
 }
+
+// Read from Vite env at build time; fall back to a sensible default so the
+// button always has something to mailto. Override via VITE_SUPPORT_EMAIL.
+const SUPPORT_EMAIL =
+  (import.meta.env.VITE_SUPPORT_EMAIL as string | undefined) ||
+  'sales@nexestate.techtrekkers.ai';
 
 export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   planId,
   planName,
+  planSlug,
   currentPlan,
   onUpgradeSuccess,
   className = '',
   disabled = false,
+  isContactOnly = false,
+  userEmail,
+  userName,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentsDisabledOpen, setPaymentsDisabledOpen] = useState(false);
   const { toast } = useToast();
+
+  const isFreePlan = (planSlug || planName).toLowerCase() === 'free';
 
   const handleUpgradeClick = async () => {
     // If upgrading to the same plan, show message
@@ -39,6 +59,32 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
       });
       return;
     }
+
+    if (isFreePlan) {
+      toast({
+        title: 'Free Plan',
+        description: 'Free plan is active by default',
+        variant: 'default',
+      });
+      return;
+    }
+
+    if (isContactOnly) {
+      // Enterprise — open the user's mail client pre-filled with a sales
+      // enquiry. No Razorpay; the sales team handles activation manually.
+      const subject = encodeURIComponent('NexEstate Enterprise enquiry');
+      const body = encodeURIComponent(
+        `Hi NexEstate team,\n\nI'd like to discuss the Enterprise plan.\n\nName: ${userName || ''}\nEmail: ${userEmail || ''}\n\n— Tell us about your needs:\n`,
+      );
+      window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+      return;
+    }
+
+    // No preemptive frontend check for the global payments kill-switch —
+    // the backend is the sole authority. If payments are off, the
+    // create-order call below returns 503 PAYMENTS_DISABLED and the catch
+    // block opens the modal. Backend env (PAYMENTS_ENABLED) is the only
+    // place you flip this.
 
     setIsLoading(true);
 
@@ -89,6 +135,13 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
       );
     } catch (error: any) {
       console.error('Upgrade error:', error);
+      // Backend says payments are off — surface the same Contact us modal
+      // even if the frontend toggle was misaligned. Backend is authoritative.
+      if (isPaymentsDisabledError(error)) {
+        setPaymentsDisabledOpen(true);
+        setIsLoading(false);
+        return;
+      }
       const errorMsg =
         error?.response?.data?.error || error?.message || 'Failed to initiate upgrade';
       toast({
@@ -137,6 +190,12 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   };
 
   return (
+    <>
+    <PaymentsDisabledModal
+      open={paymentsDisabledOpen}
+      onClose={() => setPaymentsDisabledOpen(false)}
+      planName={planName}
+    />
     <button
       onClick={handleUpgradeClick}
       disabled={disabled || isLoading}
@@ -158,9 +217,14 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
         </div>
       ) : currentPlan?.toLowerCase() === planName.toLowerCase() ? (
         'Current Plan'
+      ) : isFreePlan ? (
+        'Free Plan'
+      ) : isContactOnly ? (
+        'Contact sales'
       ) : (
         'Get Started'
       )}
     </button>
+    </>
   );
 };

@@ -20,6 +20,9 @@ const AgentChatPage = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  // True after backend returns 429 QUOTA_EXCEEDED — the agent's owner has hit
+  // their monthly chat-message limit. Composer freezes and a banner appears.
+  const [quotaExceeded, setQuotaExceeded] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [streamReply, setStreamReply] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +85,15 @@ const AgentChatPage = () => {
       { sender: "user", text, timestamp: new Date().toISOString() },
     ]);
 
+    // Helper: detect the backend's 429 QUOTA_EXCEEDED shape across both the
+    // streaming (fetch) and non-streaming (axios) error variants.
+    const isQuotaExceeded = (err: any): boolean => {
+      const status = err?.status ?? err?.response?.status;
+      const code = err?.code ?? err?.response?.data?.error;
+      const msg = String(err?.message || '').toLowerCase();
+      return status === 429 || code === 'QUOTA_EXCEEDED' || msg.includes('429');
+    };
+
     try {
       const data = await agentService.streamChatWithAgent(
         id,
@@ -95,12 +107,27 @@ const AgentChatPage = () => {
       setMessages(data.history || []);
       setStreamReply("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Message failed");
-      try {
-        const fallback = await agentService.chatWithAgent(id, text);
-        setMessages(fallback.history || []);
-      } catch {
-        // ignore fallback error, already set error above
+      // If the stream call hit the quota gate, the SSE error event surfaces
+      // as a thrown error here. Skip the fallback non-stream call (it would
+      // also 429) and freeze the composer.
+      if (isQuotaExceeded(err)) {
+        setQuotaExceeded(true);
+        setError(
+          "This agent is currently not available — its owner has reached their monthly chat limit."
+        );
+      } else {
+        setError(err instanceof Error ? err.message : "Message failed");
+        try {
+          const fallback = await agentService.chatWithAgent(id, text);
+          setMessages(fallback.history || []);
+        } catch (fallbackErr) {
+          if (isQuotaExceeded(fallbackErr)) {
+            setQuotaExceeded(true);
+            setError(
+              "This agent is currently not available — its owner has reached their monthly chat limit."
+            );
+          }
+        }
       }
     } finally {
       setSending(false);
@@ -180,24 +207,33 @@ const AgentChatPage = () => {
             <div ref={chatEndRef} />
           </div>
 
+          {quotaExceeded && (
+            <div className="mx-3 mt-3 mb-0 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 text-center">
+              This agent is currently not available — its owner has reached their monthly chat limit.
+            </div>
+          )}
           <form onSubmit={handleSend} className="border-t border-slate-200 p-3 flex gap-2">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your property requirement..."
-              className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={sending}
+              placeholder={
+                quotaExceeded
+                  ? "Chat unavailable — owner's monthly limit reached"
+                  : "Type your property requirement..."
+              }
+              className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100"
+              disabled={sending || quotaExceeded}
               maxLength={500}
             />
             <button
               type="submit"
-              disabled={sending || !input.trim()}
+              disabled={sending || quotaExceeded || !input.trim()}
               className="rounded-xl bg-blue-600 px-4 py-2 text-white text-sm font-medium disabled:opacity-50"
             >
               {sending ? "Sending..." : "Send"}
             </button>
           </form>
-          {error && <p className="px-4 pb-3 text-sm text-red-600">{error}</p>}
+          {error && !quotaExceeded && <p className="px-4 pb-3 text-sm text-red-600">{error}</p>}
         </section>
 
         <aside className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
