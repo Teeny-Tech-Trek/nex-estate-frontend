@@ -7,7 +7,7 @@ import type { Agent, AgentChatMessage } from "@/types/agent";
 import { createAgentRobotAvatar } from "@/lib/agentAvatar";
 
 const TypingAnimation = () => (
-  <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-tl-md bg-slate-100 border border-slate-200 px-3.5 py-3">
+  <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-tl-md bg-white border border-slate-200 shadow-sm px-3.5 py-3">
     <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.3s]" />
     <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:-0.15s]" />
     <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce" />
@@ -183,35 +183,38 @@ const AgentChatPage = () => {
   const renderProperty = (property: (typeof lastAgentCards)[number], index: number) => (
     <article
       key={`${property.id || index}-${index}`}
-      className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-sm transition-colors hover:border-slate-300"
+      className="group rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200"
     >
       {property.image && (
-        <img
-          src={property.image}
-          alt={property.title || "Property"}
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          className="h-28 w-full rounded-lg object-cover mb-2 bg-slate-100"
-        />
+        <div className="overflow-hidden rounded-xl mb-2">
+          <img
+            src={property.image}
+            alt={property.title || "Property"}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            className="h-28 w-full object-cover bg-slate-100 transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
       )}
       <h3 className="text-[13px] font-semibold text-slate-900 leading-snug">{property.title || "Property"}</h3>
       <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-        <MapPin className="w-3 h-3 flex-shrink-0" />
+        <MapPin className="w-3 h-3 flex-shrink-0 text-slate-400" />
         <span className="truncate">{property.location || "Location unavailable"}</span>
       </p>
-      <p className="text-[13px] font-semibold text-blue-700 mt-1.5">
+      <p className="mt-2 inline-flex items-center rounded-lg bg-blue-50 px-2 py-0.5 text-[12.5px] font-semibold text-blue-700">
         Rs {Number(property.price || 0).toLocaleString("en-IN")}
       </p>
     </article>
   );
 
   const emptyProperties = (
-    <div className="text-center py-10">
-      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center">
-        <Home className="w-5 h-5 text-slate-400" />
+    <div className="text-center py-12">
+      <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">
+        <Home className="w-6 h-6 text-slate-400" />
       </div>
-      <p className="text-sm text-slate-500">Start chatting to see matched properties.</p>
+      <p className="text-sm font-medium text-slate-600">No matches yet</p>
+      <p className="text-xs text-slate-400 mt-1">Start chatting to see matched properties.</p>
     </div>
   );
 
@@ -250,6 +253,12 @@ const AgentChatPage = () => {
       viewport via position:fixed (+ the visualViewport effect above) so it
       always fills the exact area between toolbars / above the keyboard —
       no top clip, no bottom gap, no keyboard gap on phones or laptops.
+
+      iOS NOTE: the composer <input> uses a 16px font on mobile. iOS Safari
+      auto-zooms into any focused input whose font-size is < 16px, which is
+      what pushed the send button off-screen before. Keeping it at 16px stops
+      that zoom entirely.
+
       Two-pane on lg+: chat (left) + Recommended Properties (right).
       On mobile the sidebar collapses into a bottom-sheet drawer.
     */
@@ -262,7 +271,7 @@ const AgentChatPage = () => {
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex-shrink-0 border-b border-slate-200 backdrop-blur-xl bg-white/90 z-40"
+        className="flex-shrink-0 border-b border-slate-200 backdrop-blur-xl bg-white/90 shadow-[0_1px_0_rgba(15,23,42,0.02)] z-40"
       >
         <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5">
           <div className="flex items-center justify-between gap-2">
@@ -273,7 +282,7 @@ const AgentChatPage = () => {
                 loading="eager"
                 decoding="sync"
                 fetchPriority="high"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-slate-200 bg-slate-100 flex-shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-100 border border-slate-200 bg-slate-100 flex-shrink-0"
               />
               <div className="min-w-0 flex-1 leading-tight">
                 <h1 className="text-sm sm:text-[15px] font-semibold text-slate-900 tracking-tight truncate">
@@ -302,9 +311,9 @@ const AgentChatPage = () => {
                 )}
               </button>
 
-              <div className="flex items-center gap-1.5 bg-slate-100 rounded-full px-2 sm:px-2.5 py-1">
+              <div className="flex items-center gap-1.5 bg-green-50 rounded-full px-2 sm:px-2.5 py-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[11px] sm:text-xs text-slate-600 font-medium">Live</span>
+                <span className="text-[11px] sm:text-xs text-green-700 font-medium">Live</span>
               </div>
             </div>
           </div>
@@ -332,7 +341,7 @@ const AgentChatPage = () => {
                       {/* Avatar */}
                       <div className="flex-shrink-0 mt-0.5">
                         {isUser ? (
-                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-sm">
                             <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                           </div>
                         ) : (
@@ -347,9 +356,9 @@ const AgentChatPage = () => {
                       {/* Bubble */}
                       <div className={`flex flex-col gap-1 max-w-[85%] sm:max-w-[78%] ${isUser ? "items-end" : "items-start"}`}>
                         <div
-                          className={`px-3.5 py-2.5 rounded-2xl text-[13.5px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words ${
+                          className={`px-3.5 py-2.5 rounded-2xl text-[14px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words ${
                             isUser
-                              ? "bg-blue-600 text-white rounded-tr-md"
+                              ? "bg-blue-600 text-white rounded-tr-md shadow-sm shadow-blue-600/20"
                               : "bg-white border border-slate-200 text-slate-800 rounded-tl-md shadow-sm"
                           }`}
                         >
@@ -379,7 +388,7 @@ const AgentChatPage = () => {
                   />
                   <div className="max-w-[85%] sm:max-w-[78%]">
                     {streamReply ? (
-                      <div className="px-3.5 py-2.5 rounded-2xl rounded-tl-md text-[13.5px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words bg-white border border-slate-200 text-slate-800 shadow-sm">
+                      <div className="px-3.5 py-2.5 rounded-2xl rounded-tl-md text-[14px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words bg-white border border-slate-200 text-slate-800 shadow-sm">
                         {streamReply}
                       </div>
                     ) : (
@@ -404,25 +413,28 @@ const AgentChatPage = () => {
 
               <form
                 onSubmit={handleSend}
-                className="flex items-center gap-2 p-1.5 rounded-full bg-white border border-slate-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200"
+                className="flex items-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-white border border-slate-300 shadow-sm focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200"
               >
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={
                     quotaExceeded
-                      ? "Chat unavailable — owner's monthly limit reached"
+                      ? "Chat unavailable — monthly limit reached"
                       : "Type your property requirement..."
                   }
-                  className="flex-1 min-w-0 bg-transparent border-0 outline-none focus:outline-none h-9 text-[14px] sm:text-[15px] px-3 sm:px-4 text-slate-900 placeholder:text-slate-400 disabled:opacity-60"
+                  /* text-[16px] on mobile prevents iOS focus auto-zoom */
+                  className="flex-1 min-w-0 bg-transparent border-0 outline-none focus:outline-none h-9 text-[16px] sm:text-[15px] px-3 sm:px-4 text-slate-900 placeholder:text-slate-400 disabled:opacity-60"
                   disabled={sending || quotaExceeded}
                   maxLength={500}
+                  enterKeyHint="send"
+                  autoComplete="off"
                   aria-label="Type your message"
                 />
                 <button
                   type="submit"
                   disabled={sending || quotaExceeded || !input.trim()}
-                  className="h-9 w-9 p-0 rounded-full bg-blue-600 hover:bg-blue-700 border-0 disabled:opacity-40 transition-all duration-200 flex-shrink-0 flex items-center justify-center text-white"
+                  className="h-9 w-9 p-0 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-sm shadow-blue-600/30 border-0 disabled:opacity-40 disabled:shadow-none transition-all duration-200 active:scale-95 flex-shrink-0 flex items-center justify-center text-white"
                   aria-label="Send message"
                 >
                   {sending ? (
@@ -445,14 +457,23 @@ const AgentChatPage = () => {
 
         {/* Desktop sidebar — Recommended Properties */}
         <aside className="hidden lg:flex flex-col w-[340px] xl:w-[380px] flex-shrink-0 border-l border-slate-200 bg-white">
-          <div className="flex-shrink-0 px-4 py-3 border-b border-slate-200">
-            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-blue-600" />
-              Recommended Properties
-            </h2>
-            <p className="text-[11px] text-slate-500 mt-0.5">Matches update live from your conversation.</p>
+          <div className="flex-shrink-0 px-4 py-3.5 border-b border-slate-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
+                  <Building2 className="w-4 h-4 text-blue-600" />
+                </span>
+                Recommended Properties
+              </h2>
+              {lastAgentCards.length > 0 && (
+                <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-blue-600 px-1.5 text-[11px] font-semibold text-white">
+                  {lastAgentCards.length}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-1">Matches update live from your conversation.</p>
           </div>
-          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3 bg-slate-50">
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3.5 space-y-3 bg-slate-50">
             {lastAgentCards.length === 0 ? emptyProperties : lastAgentCards.map(renderProperty)}
           </div>
         </aside>
@@ -476,7 +497,11 @@ const AgentChatPage = () => {
               onClick={(e) => e.stopPropagation()}
               className="rounded-t-2xl bg-white border-t border-slate-200 max-h-[80dvh] flex flex-col pb-[env(safe-area-inset-bottom)]"
             >
-              <div className="flex-shrink-0 flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-200">
+              {/* grab handle */}
+              <div className="flex-shrink-0 flex justify-center pt-2.5">
+                <span className="h-1 w-10 rounded-full bg-slate-300" />
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-between px-5 pt-2.5 pb-3 border-b border-slate-200">
                 <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-blue-600" />
                   Recommended Properties
