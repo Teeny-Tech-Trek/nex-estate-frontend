@@ -36,8 +36,13 @@ export interface AgentPropertyCard {
   bedrooms?: number;
   bathrooms?: number;
   area?: number;
+  areaUnit?: string;
+  propertyType?: string;
+  status?: string;
   location?: string;
   image?: string | null;
+  highlights?: string;
+  matchScore?: number;
 }
 
 export interface AgentChatMessage {

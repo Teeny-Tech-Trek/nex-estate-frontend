@@ -110,12 +110,10 @@ const AgentChatPage = () => {
     };
   }, [id]);
 
-  const handleSend = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!id || !input.trim() || sending) return;
+  const sendChatMessage = async (rawText: string) => {
+    const text = rawText.trim();
+    if (!id || !text || sending) return;
 
-    const text = input.trim();
-    setInput("");
     setSending(true);
     setIsTyping(true);
     setStreamReply("");
@@ -176,14 +174,33 @@ const AgentChatPage = () => {
     }
   };
 
+  const handleSend = (e: FormEvent) => {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text) return;
+    setInput("");
+    void sendChatMessage(text);
+  };
+
+  // Click handler for inline property cards — asks the bot about the property.
+  const handlePropertyClick = (property: { id?: string; title?: string }) => {
+    if (sending || quotaExceeded) return;
+    const label = property.title || `property ${property.id}`;
+    void sendChatMessage(`Tell me more about "${label}" — price, BHK, area, amenities.`);
+  };
+
   // ---- UI helpers (presentation only) -------------------------------------
 
   const agentAvatar = () => (agent ? agent.avatarUrl || createAgentRobotAvatar(agent) : "");
 
   const renderProperty = (property: (typeof lastAgentCards)[number], index: number) => (
-    <article
+    <button
+      type="button"
       key={`${property.id || index}-${index}`}
-      className="group rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-blue-200"
+      onClick={() => handlePropertyClick(property)}
+      disabled={sending || quotaExceeded}
+      className="group w-full text-left rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+      aria-label={`Ask about ${property.title || "this property"}`}
     >
       {property.image && (
         <div className="overflow-hidden rounded-xl mb-2">
@@ -202,10 +219,25 @@ const AgentChatPage = () => {
         <MapPin className="w-3 h-3 flex-shrink-0 text-slate-400" />
         <span className="truncate">{property.location || "Location unavailable"}</span>
       </p>
-      <p className="mt-2 inline-flex items-center rounded-lg bg-blue-50 px-2 py-0.5 text-[12.5px] font-semibold text-blue-700">
-        Rs {Number(property.price || 0).toLocaleString("en-IN")}
+      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <span className="inline-flex items-center rounded-lg bg-blue-50 px-2 py-0.5 text-[12.5px] font-semibold text-blue-700">
+          Rs {Number(property.price || 0).toLocaleString("en-IN")}
+        </span>
+        {property.bedrooms != null && (
+          <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
+            {property.bedrooms} BHK
+          </span>
+        )}
+        {property.area != null && (
+          <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
+            {property.area} {property.areaUnit || "sqft"}
+          </span>
+        )}
+      </div>
+      <p className="mt-1.5 text-[10.5px] text-blue-600 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+        Tap to ask about this property →
       </p>
-    </article>
+    </button>
   );
 
   const emptyProperties = (
@@ -364,6 +396,24 @@ const AgentChatPage = () => {
                         >
                           {message.text}
                         </div>
+
+                        {/* Inline property cards — only on agent messages that carry matches.
+                            Cards are clickable: tapping sends a follow-up question to the bot. */}
+                        {!isUser && Array.isArray(message.propertyCards) && message.propertyCards.length > 0 && (
+                          <div className="w-full mt-1">
+                            <div className="flex gap-2 overflow-x-auto pb-1.5 -mx-1 px-1 snap-x snap-mandatory">
+                              {message.propertyCards.map((card, cIdx) => (
+                                <div
+                                  key={`${message.timestamp || idx}-card-${card.id || cIdx}`}
+                                  className="snap-start flex-shrink-0 w-[220px]"
+                                >
+                                  {renderProperty(card, cIdx)}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {message.timestamp && (
                           <span className="text-[10px] text-slate-400 px-1">
                             {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

@@ -422,11 +422,31 @@ const Signup: React.FC = () => {
           >
             {/* Heading */}
             <h1 className="font-extrabold text-white leading-none tracking-tight" style={{ fontSize: "clamp(24px, 3vw, 34px)" }}>
-              Create Account
+              {onboardingToken ? "Complete your account" : "Create Account"}
             </h1>
             <p className="mt-3 text-[15px] text-white/60">
-              Fill in your details to get started.
+              {onboardingToken
+                ? "Just a few more details and you're in."
+                : "Fill in your details to get started."}
             </p>
+
+            {/* Google onboarding banner — explains why password field is hidden */}
+            {onboardingToken && (
+              <div
+                className="mt-4 flex items-start gap-3 rounded-xl px-3.5 py-3 border"
+                style={{
+                  background: "rgba(124,92,191,0.10)",
+                  borderColor: "rgba(167,139,250,0.30)",
+                }}
+              >
+                <GoogleIcon className="w-[18px] h-[18px] flex-shrink-0 mt-0.5" />
+                <div className="text-[12.5px] text-violet-100 leading-snug">
+                  <span className="font-semibold">Continuing with Google</span>
+                  {formData.email ? <> as <span className="text-white">{formData.email}</span></> : null}
+                  {" — "}no password needed.
+                </div>
+              </div>
+            )}
 
             {/* Form */}
             <form onSubmit={onSubmit} className="mt-6 space-y-4">
@@ -626,39 +646,41 @@ const Signup: React.FC = () => {
                 )}
               </AnimatePresence>
 
-              {/* Password */}
-              <div>
-                <label htmlFor="password" className="block text-[13px] font-bold text-white/90 mb-1.5">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white/40 pointer-events-none"
-                    strokeWidth={2}
-                  />
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={formData.password || ""}
-                    onChange={handleChange}
-                    placeholder="Create a strong password"
-                    autoComplete="new-password"
-                    className="w-full h-[44px] pl-11 pr-11 rounded-xl text-[13.5px] text-white placeholder:text-white/35 border outline-none transition-all bg-white/5 border-white/10 hover:border-violet-400/40 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20"
-                  />
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/45 hover:text-white transition-colors"
-                  >
-                    {showPassword
-                      ? <EyeOff className="w-[18px] h-[18px]" strokeWidth={2} />
-                      : <Eye    className="w-[18px] h-[18px]" strokeWidth={2} />}
-                  </button>
+              {/* Password — hidden during Google onboarding (backend ignores it). */}
+              {!onboardingToken && (
+                <div>
+                  <label htmlFor="password" className="block text-[13px] font-bold text-white/90 mb-1.5">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white/40 pointer-events-none"
+                      strokeWidth={2}
+                    />
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={formData.password || ""}
+                      onChange={handleChange}
+                      placeholder="Create a strong password"
+                      autoComplete="new-password"
+                      className="w-full h-[44px] pl-11 pr-11 rounded-xl text-[13.5px] text-white placeholder:text-white/35 border outline-none transition-all bg-white/5 border-white/10 hover:border-violet-400/40 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/45 hover:text-white transition-colors"
+                    >
+                      {showPassword
+                        ? <EyeOff className="w-[18px] h-[18px]" strokeWidth={2} />
+                        : <Eye    className="w-[18px] h-[18px]" strokeWidth={2} />}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Submit button — multi-state with smooth transitions */}
               <motion.button
@@ -710,7 +732,7 @@ const Signup: React.FC = () => {
                       exit={{    opacity: 0, y: -6 }}
                       className="flex items-center gap-2"
                     >
-                      Start Free Trial
+                      {onboardingToken ? "Finish & continue" : "Start Free Trial"}
                       <ArrowRight className="w-5 h-5" strokeWidth={2.4} />
                     </motion.span>
                   )}
@@ -731,22 +753,25 @@ const Signup: React.FC = () => {
                 )}
               </AnimatePresence>
 
-              {/* OR divider */}
-              <div className="flex items-center gap-4 py-1 pt-2">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-[12px] font-medium text-white/45 tracking-wider">OR</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
+              {/* OR + Google — hidden during Google onboarding (user already came from Google). */}
+              {!onboardingToken && (
+                <>
+                  <div className="flex items-center gap-4 py-1 pt-2">
+                    <div className="flex-1 h-px bg-white/10" />
+                    <span className="text-[12px] font-medium text-white/45 tracking-wider">OR</span>
+                    <div className="flex-1 h-px bg-white/10" />
+                  </div>
 
-              {/* Social — Google */}
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                className="w-full h-[44px] rounded-xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/[0.09] flex items-center justify-center gap-3 text-[13.5px] font-semibold text-white transition-all"
-              >
-                <GoogleIcon className="w-[18px] h-[18px]" />
-                Continue with Google
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignIn}
+                    className="w-full h-[44px] rounded-xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/[0.09] flex items-center justify-center gap-3 text-[13.5px] font-semibold text-white transition-all"
+                  >
+                    <GoogleIcon className="w-[18px] h-[18px]" />
+                    Continue with Google
+                  </button>
+                </>
+              )}
 
               {/* Security note */}
               <div className="flex items-center justify-center gap-2 pt-2 text-[12.5px] text-white/50">
