@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSignupForm } from "../Logics/Usesignform";
+import { useToast } from "../hooks/use-toast";
 
 // ─────────────────────────────────────────────
 // Feature showcase data (mirrors Features.tsx)
@@ -161,6 +162,30 @@ const Signup: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [accTypeOpen, setAccTypeOpen]   = useState(false);
   const accDropdownRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  // Google OAuth redirect — mirrors Login.tsx
+  const handleGoogleSignIn = () => {
+    const clientId    = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
+    if (!clientId || !redirectUri) {
+      toast({
+        title: "Google sign-in unavailable",
+        description: "Google OAuth isn't configured. Set VITE_GOOGLE_CLIENT_ID and VITE_GOOGLE_REDIRECT_URI in the frontend .env.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const params = new URLSearchParams({
+      client_id:     clientId,
+      redirect_uri:  redirectUri,
+      response_type: "code",
+      scope:         "openid profile email",
+      access_type:   "offline",
+      prompt:        "consent",
+    });
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  };
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -716,6 +741,7 @@ const Signup: React.FC = () => {
               {/* Social — Google */}
               <button
                 type="button"
+                onClick={handleGoogleSignIn}
                 className="w-full h-[44px] rounded-xl bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/[0.09] flex items-center justify-center gap-3 text-[13.5px] font-semibold text-white transition-all"
               >
                 <GoogleIcon className="w-[18px] h-[18px]" />

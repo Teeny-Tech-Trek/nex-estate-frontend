@@ -531,6 +531,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/use-toast";
 
 // ─────────────────────────────────────────────
 // Brand icons (lucide doesn't ship these)
@@ -564,6 +565,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -594,6 +596,14 @@ const SignIn: React.FC = () => {
   const handleGoogleSignIn = () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
+    if (!clientId || !redirectUri) {
+      toast({
+        title: 'Google sign-in unavailable',
+        description: "Google OAuth isn't configured. Set VITE_GOOGLE_CLIENT_ID and VITE_GOOGLE_REDIRECT_URI in the frontend .env.",
+        variant: 'destructive',
+      });
+      return;
+    }
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
