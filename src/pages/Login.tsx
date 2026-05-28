@@ -928,14 +928,7 @@ const SignIn: React.FC = () => {
               Continue with Google
             </button>
 
-            {/* Social — Apple */}
-            <button
-              type="button"
-              className="w-full h-[44px] rounded-xl bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 flex items-center justify-center gap-3 text-[13.5px] font-semibold text-gray-800 transition-all"
-            >
-              <AppleIcon className="w-[18px] h-[18px] text-gray-900" />
-              Continue with Apple
-            </button>
+           
 
             {/* Security note */}
             <div className="flex items-center justify-center gap-2 pt-3 text-[12.5px] text-gray-400">
