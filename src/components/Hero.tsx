@@ -226,7 +226,7 @@ const Dashboard: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => {
       transition={{ delay: 0.8, duration: 0.7 }}
       className={
         mobile
-          ? "relative w-full max-w-[300px] ml-auto mr-2 p-[14px_14px_12px] rounded-[14px] backdrop-blur-[14px] border border-[rgba(196,181,253,0.7)] bg-[rgba(10,8,38,0.88)]"
+          ? "relative w-full p-[10px_10px_9px] rounded-[12px] backdrop-blur-[12px] border border-[rgba(196,181,253,0.7)] bg-[rgba(10,8,38,0.88)]"
           : "hidden lg:block absolute bottom-[4%] -left-[2%] z-[25] w-[clamp(220px,22vw,260px)] p-[14px_14px_12px] rounded-[14px] backdrop-blur-[14px] border border-[rgba(196,181,253,0.7)] bg-[rgba(10,8,38,0.88)]"
       }
       style={{
@@ -291,7 +291,7 @@ const Phone: React.FC<{ mobile?: boolean }> = ({ mobile = false }) => {
       transition={{ delay: 0.7, duration: 0.8 }}
       className={
         mobile
-          ? "relative mx-auto w-[180px] aspect-[9/19] p-[6px] rounded-[30px] border-[1.5px] border-[rgba(196,181,253,0.75)]"
+          ? "relative w-full aspect-[9/19] p-[5px] rounded-[24px] border-[1.5px] border-[rgba(196,181,253,0.75)]"
           : "hidden lg:block absolute -right-[4%] top-[14%] z-[30] w-[clamp(170px,17vw,195px)] aspect-[9/19] p-[6px] rounded-[30px] border-[1.5px] border-[rgba(196,181,253,0.75)]"
       }
       style={{
@@ -723,40 +723,13 @@ const Hero = () => {
             <div className="lg:hidden flex flex-col gap-3 mt-6 px-1">
               {/* Feature badges 2-col grid */}
               {/* CHANGED: gap-2.5 → gap-1.5 (badges closer left/right) */}
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="hidden grid-cols-2 gap-1.5">
                 <FloatingBadge mobile icon={MessageCircle} title="AI Chat Agent"     subtitle="Instantly answers queries 24/7"        delay={0.1} />
                 <FloatingBadge mobile icon={Calendar}      title="Smart Scheduling"  subtitle="Books & confirms property viewings"    delay={0.2} />
                 <FloatingBadge mobile icon={UserCheck}     title="Lead Intelligence" subtitle="Qualifies & scores leads automatically" delay={0.3} />
                 <FloatingBadge mobile icon={TrendingUp}    title="Deal Automation"   subtitle="Follows up & closes deals on autopilot" delay={0.4} />
               </div>
 
-              {/* Phone mockup centered */}
-              {/* CHANGED: mt-2 → mt-8 (more top space above phone on mobile) */}
-              <div className="flex justify-center mt-8">
-                <Phone mobile />
-              </div>
-
-              {/* Dashboard (mobile className already updated: ml-auto mr-2 — slightly right-shifted) */}
-              <Dashboard mobile />
-
-              {/* Cancel anytime pill */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="self-center inline-flex items-center gap-[9px] px-3.5 py-2 rounded-full backdrop-blur-[10px] border border-[rgba(196,181,253,0.7)] bg-[rgba(10,8,38,0.85)]"
-                style={{
-                  boxShadow: "0 0 18px rgba(124,58,237,0.22), 0 6px 18px rgba(0,0,0,0.4)",
-                }}
-              >
-                <div className="w-[22px] h-[22px] rounded-md flex items-center justify-center bg-[rgba(167,139,250,0.18)] text-[#d8b4fe]">
-                  <Lock size={11} strokeWidth={2.4} />
-                </div>
-                <div>
-                  <div className="font-bold text-[11px] text-white leading-tight">Cancel Anytime</div>
-                  <div className="font-normal text-[9.5px] text-white/55">No Lock-in</div>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
 

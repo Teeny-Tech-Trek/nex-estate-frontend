@@ -122,9 +122,9 @@ const Footer: React.FC = () => {
               Contact
             </h3>
             <div className="mt-5 space-y-3">
-              <a href="mailto:hello@nexestate.ai" className="flex items-center gap-3 text-sm font-semibold transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.72)" }}>
+              <a href="mailto:ttt.teenytechtrek@gmail.com" className="flex items-center gap-3 text-sm font-semibold transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.72)" }}>
                 <Mail className="h-4 w-4 text-indigo-300" />
-                hello@nexestate.ai
+                ttt.teenytechtrek@gmail.com
               </a>
               <div className="flex items-center gap-3 text-sm font-semibold" style={{ color: "rgba(255,255,255,0.72)" }}>
                 <Phone className="h-4 w-4 text-indigo-300" />
