@@ -1,7 +1,19 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Building2, MapPin, X, Home, User, AlertCircle } from "lucide-react";
+import {
+  Send,
+  Building2,
+  MapPin,
+  X,
+  Home,
+  User,
+  AlertCircle,
+  ArrowLeft,
+  BedDouble,
+  Maximize2,
+  Sparkles,
+} from "lucide-react";
 import agentService from "@/services/agent.service";
 import type { Agent, AgentChatMessage } from "@/types/agent";
 import { createAgentRobotAvatar } from "@/lib/agentAvatar";
@@ -16,6 +28,7 @@ const TypingAnimation = () => (
 
 const AgentChatPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const chatEndRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [agent, setAgent] = useState<Agent | null>(null);
@@ -182,6 +195,13 @@ const AgentChatPage = () => {
     void sendChatMessage(text);
   };
 
+  // Back navigation — go to the previous history entry, or fall back to home
+  // if the chat was opened directly (e.g. from a QR scan with no history).
+  const handleBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate("/");
+  };
+
   // Click handler for inline property cards — asks the bot about the property.
   const handlePropertyClick = (property: { id?: string; title?: string }) => {
     if (sending || quotaExceeded) return;
@@ -199,44 +219,60 @@ const AgentChatPage = () => {
       key={`${property.id || index}-${index}`}
       onClick={() => handlePropertyClick(property)}
       disabled={sending || quotaExceeded}
-      className="group w-full text-left rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+      className="group flex w-full flex-col overflow-hidden text-left rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm"
       aria-label={`Ask about ${property.title || "this property"}`}
     >
-      {property.image && (
-        <div className="overflow-hidden rounded-xl mb-2">
+      {/* Cover image with price chip overlay */}
+      <div className="relative h-32 w-full overflow-hidden bg-slate-100">
+        {property.image ? (
           <img
             src={property.image}
             alt={property.title || "Property"}
             loading="lazy"
             decoding="async"
             fetchPriority="low"
-            className="h-28 w-full object-cover bg-slate-100 transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        </div>
-      )}
-      <h3 className="text-[13px] font-semibold text-slate-900 leading-snug">{property.title || "Property"}</h3>
-      <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-        <MapPin className="w-3 h-3 flex-shrink-0 text-slate-400" />
-        <span className="truncate">{property.location || "Location unavailable"}</span>
-      </p>
-      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center rounded-lg bg-blue-50 px-2 py-0.5 text-[12.5px] font-semibold text-blue-700">
-          Rs {Number(property.price || 0).toLocaleString("en-IN")}
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+            <Building2 className="h-7 w-7 text-slate-300" />
+          </div>
+        )}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/45 to-transparent" />
+        <span className="absolute bottom-2 left-2 inline-flex items-center rounded-lg bg-white/95 px-2 py-1 text-[12.5px] font-bold text-slate-900 shadow-sm backdrop-blur">
+          ₹ {Number(property.price || 0).toLocaleString("en-IN")}
         </span>
-        {property.bedrooms != null && (
-          <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
-            {property.bedrooms} BHK
-          </span>
-        )}
-        {property.area != null && (
-          <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
-            {property.area} {property.areaUnit || "sqft"}
-          </span>
-        )}
       </div>
-      <p className="mt-1.5 text-[10.5px] text-blue-600 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-        Tap to ask about this property →
-      </p>
+
+      <div className="flex flex-1 flex-col p-3">
+        <h3 className="line-clamp-1 text-[13.5px] font-semibold text-slate-900 leading-snug">
+          {property.title || "Property"}
+        </h3>
+        <p className="mt-1 flex items-center gap-1 text-[11.5px] text-slate-500">
+          <MapPin className="h-3 w-3 flex-shrink-0 text-slate-400" />
+          <span className="truncate">{property.location || "Location unavailable"}</span>
+        </p>
+
+        <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+          {property.bedrooms != null && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
+              <BedDouble className="h-3 w-3 text-slate-400" />
+              {property.bedrooms} BHK
+            </span>
+          )}
+          {property.area != null && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">
+              <Maximize2 className="h-3 w-3 text-slate-400" />
+              {property.area} {property.areaUnit || "sqft"}
+            </span>
+          )}
+        </div>
+
+        <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100">
+          Tap to ask about this
+          <Send className="h-3 w-3" />
+        </span>
+      </div>
     </button>
   );
 
@@ -308,14 +344,27 @@ const AgentChatPage = () => {
         <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
-              <img
-                src={agentAvatar()}
-                alt={agent.name}
-                loading="eager"
-                decoding="sync"
-                fetchPriority="high"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-100 border border-slate-200 bg-slate-100 flex-shrink-0"
-              />
+              {/* Back navigation */}
+              <button
+                type="button"
+                onClick={handleBack}
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 active:scale-95"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div className="relative flex-shrink-0">
+                <img
+                  src={agentAvatar()}
+                  alt={agent.name}
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority="high"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-100 border border-slate-200 bg-slate-100"
+                />
+                {/* online dot */}
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-500" />
+              </div>
               <div className="min-w-0 flex-1 leading-tight">
                 <h1 className="text-sm sm:text-[15px] font-semibold text-slate-900 tracking-tight truncate">
                   {agent.name}
@@ -400,12 +449,16 @@ const AgentChatPage = () => {
                         {/* Inline property cards — only on agent messages that carry matches.
                             Cards are clickable: tapping sends a follow-up question to the bot. */}
                         {!isUser && Array.isArray(message.propertyCards) && message.propertyCards.length > 0 && (
-                          <div className="w-full mt-1">
-                            <div className="flex gap-2 overflow-x-auto pb-1.5 -mx-1 px-1 snap-x snap-mandatory">
+                          <div className="w-full mt-1.5">
+                            <div className="mb-1.5 flex items-center gap-1.5 px-0.5 text-[11px] font-medium text-slate-500">
+                              <Sparkles className="h-3 w-3 text-blue-500" />
+                              {message.propertyCards.length} matched {message.propertyCards.length === 1 ? "property" : "properties"}
+                            </div>
+                            <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                               {message.propertyCards.map((card, cIdx) => (
                                 <div
                                   key={`${message.timestamp || idx}-card-${card.id || cIdx}`}
-                                  className="snap-start flex-shrink-0 w-[220px]"
+                                  className="snap-start flex-shrink-0 w-[230px]"
                                 >
                                   {renderProperty(card, cIdx)}
                                 </div>
