@@ -411,6 +411,8 @@ const AgentChatPage = () => {
               <AnimatePresence>
                 {messages.map((message, idx) => {
                   const isUser = message.sender === "user";
+                  const cards = !isUser && Array.isArray(message.propertyCards) ? message.propertyCards : [];
+                  const hasCards = cards.length > 0;
                   return (
                     <motion.div
                       key={`${message.timestamp || idx}-${idx}`}
@@ -435,9 +437,11 @@ const AgentChatPage = () => {
                       </div>
 
                       {/* Bubble */}
-                      <div className={`flex flex-col gap-1 max-w-[85%] sm:max-w-[78%] ${isUser ? "items-end" : "items-start"}`}>
+                      <div className={`flex flex-col gap-1 ${hasCards ? "w-full max-w-full items-start" : "max-w-[85%] sm:max-w-[78%]"} ${isUser ? "items-end" : "items-start"}`}>
                         <div
                           className={`px-3.5 py-2.5 rounded-2xl text-[14px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words ${
+                            hasCards ? "max-w-[85%] sm:max-w-[78%]" : ""
+                          } ${
                             isUser
                               ? "bg-blue-600 text-white rounded-tr-md shadow-sm shadow-blue-600/20"
                               : "bg-white border border-slate-200 text-slate-800 rounded-tl-md shadow-sm"
@@ -447,23 +451,45 @@ const AgentChatPage = () => {
                         </div>
 
                         {/* Inline property cards — only on agent messages that carry matches.
-                            Cards are clickable: tapping sends a follow-up question to the bot. */}
-                        {!isUser && Array.isArray(message.propertyCards) && message.propertyCards.length > 0 && (
+                            Cards are clickable: tapping sends a follow-up question to the bot.
+
+                            Layout rule: up to 3 cards lay out in an even grid (all fully
+                            visible, no scroll). With 4+ cards we switch to a horizontal
+                            scroller sized so EXACTLY 3 cards are visible at once — the rest
+                            are off-screen and reachable by swiping (no half-cut peek). */}
+                        {hasCards && (
                           <div className="w-full mt-1.5">
                             <div className="mb-1.5 flex items-center gap-1.5 px-0.5 text-[11px] font-medium text-slate-500">
                               <Sparkles className="h-3 w-3 text-blue-500" />
-                              {message.propertyCards.length} matched {message.propertyCards.length === 1 ? "property" : "properties"}
+                              {cards.length} matched {cards.length === 1 ? "property" : "properties"}
                             </div>
-                            <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                              {message.propertyCards.map((card, cIdx) => (
-                                <div
-                                  key={`${message.timestamp || idx}-card-${card.id || cIdx}`}
-                                  className="snap-start flex-shrink-0 w-[230px]"
-                                >
-                                  {renderProperty(card, cIdx)}
-                                </div>
-                              ))}
-                            </div>
+                            {cards.length <= 3 ? (
+                              <div
+                                className="grid gap-2.5"
+                                style={{
+                                  gridTemplateColumns: `repeat(${cards.length}, minmax(0, 1fr))`,
+                                  maxWidth: cards.length >= 3 ? "100%" : `${cards.length * 244}px`,
+                                }}
+                              >
+                                {cards.map((card, cIdx) => (
+                                  <div key={`${message.timestamp || idx}-card-${card.id || cIdx}`} className="min-w-0">
+                                    {renderProperty(card, cIdx)}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                {cards.map((card, cIdx) => (
+                                  <div
+                                    key={`${message.timestamp || idx}-card-${card.id || cIdx}`}
+                                    className="snap-start flex-shrink-0"
+                                    style={{ width: "calc((100% - 1.25rem) / 3)" }}
+                                  >
+                                    {renderProperty(card, cIdx)}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
 
