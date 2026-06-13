@@ -177,7 +177,7 @@ const AppLayout = () => {
                 )}
               </Button>
               {showNotificationDropdown && (
-                <div className="absolute right-0 mt-2 w-80 max-h-96 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-y-auto">
+                <div className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-24px))] max-h-[min(24rem,70vh)] bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-y-auto overflow-x-hidden">
                   <div className="p-3 border-b font-semibold text-gray-800 flex items-center justify-between">
                     Notifications
                     {loadingNotifications && <span className="text-xs text-gray-400 ml-2">Loading...</span>}
@@ -196,8 +196,8 @@ const AppLayout = () => {
                         }
                       }}
                     >
-                      <div className="font-medium text-gray-900 text-sm">{n.title}</div>
-                      <div className="text-xs text-gray-600">{n.message}</div>
+                      <div className="font-medium text-gray-900 text-sm break-words">{n.title}</div>
+                      <div className="text-xs text-gray-600 break-words">{n.message}</div>
                       <div className="text-[10px] text-gray-400 mt-1">{new Date(n.createdAt).toLocaleString()}</div>
                     </div>
                   ))}

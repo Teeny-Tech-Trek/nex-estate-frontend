@@ -1290,7 +1290,7 @@ const PropertyFormModal = ({
               <Button
                 variant="outline"
                 onClick={addHazard}
-                className="w-full border-slate-700 hover:bg-slate-800 text-white h-12 rounded-lg"
+                className="w-full border-slate-700 hover:bg-slate-800 text-blue-900 h-12 rounded-lg "
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Risk Hazard

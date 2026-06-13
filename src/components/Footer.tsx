@@ -6,13 +6,27 @@ import { Building2, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Features", href: "#features" },
+  { label: "Contact Us", href: "#contactUs" },
   // { label: "Pricing", href: "#pricing" },
-  // { label: "Dashboard", href: "#dashboard" },
 ];
 
 const SOLUTIONS = ["Lead capture", "AI avatar agents", "Property support", "CRM integrations"];
 
 const Footer: React.FC = () => {
+  // Route-aware section navigation. On the home page we smooth-scroll to the
+  // section; from any other route we navigate home with the hash so the home
+  // page scrolls to it on load. (The Navbar handles this the same way.)
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!href.startsWith("#")) return; // plain routes (e.g. "/") behave normally
+    e.preventDefault();
+    const id = href.slice(1);
+    if (window.location.pathname === "/") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.location.href = `/${href}`;
+    }
+  };
+
   return (
     <footer
       className="relative w-full overflow-hidden"
@@ -95,7 +109,12 @@ const Footer: React.FC = () => {
             <ul className="mt-5 space-y-3">
               {NAV_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm font-semibold transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.70)" }}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className="text-sm font-semibold transition-colors hover:text-white"
+                    style={{ color: "rgba(255,255,255,0.70)" }}
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -128,7 +147,7 @@ const Footer: React.FC = () => {
               </a>
               <div className="flex items-center gap-3 text-sm font-semibold" style={{ color: "rgba(255,255,255,0.72)" }}>
                 <Phone className="h-4 w-4 text-indigo-300" />
-                Sales support
+                9855806696
               </div>
               <div className="flex items-center gap-3 text-sm font-semibold" style={{ color: "rgba(255,255,255,0.72)" }}>
                 <MapPin className="h-4 w-4 text-indigo-300" />
@@ -152,17 +171,7 @@ const Footer: React.FC = () => {
             <ShieldCheck className="h-4 w-4 text-indigo-300" />
             <span>(c) 2026 NexEstate. All rights reserved.</span>
           </div>
-          <div className="flex items-center gap-5">
-            <a href="#" className="font-medium transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.58)" }}>
-              Privacy
-            </a>
-            <a href="#" className="font-medium transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.58)" }}>
-              Terms
-            </a>
-            <a href="#newsletter" className="font-medium transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.58)" }}>
-              Newsletter
-            </a>
-          </div>
+          
         </div>
       </div>
     </footer>

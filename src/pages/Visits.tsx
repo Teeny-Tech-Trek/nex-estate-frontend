@@ -348,7 +348,8 @@ export default function Visits() {
               <p className="text-slate-400 text-sm mt-1">Create a visit or adjust search/filter.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-800/70">
@@ -407,32 +408,81 @@ export default function Visits() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile card list — stacked records (table is unusable on phones) */}
+            <div className="md:hidden divide-y divide-slate-800/40">
+              {filteredVisits.map((visit) => (
+                <div key={visit._id} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-sm text-white font-semibold break-words">{visit.buyerName}</div>
+                      <div className="text-xs text-slate-400 mt-0.5 break-all">{visit.buyerEmail || visit.buyerPhone || "-"}</div>
+                    </div>
+                    <select
+                      value={visit.status}
+                      onChange={(e) => void updateVisitStatus(visit._id, e.target.value as VisitStatus)}
+                      className={`shrink-0 text-xs border rounded-full px-2.5 py-1.5 bg-transparent ${statusClass[visit.status]}`}
+                    >
+                      {visitStatuses.map((status) => (
+                        <option key={status} value={status} className="bg-slate-900 text-slate-100">
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                    <div className="min-w-0 truncate"><span className="text-slate-500">Agent:</span> <span className="text-slate-200">{getAgentName(visit)}</span></div>
+                    <div className="min-w-0 truncate"><span className="text-slate-500">Property:</span> <span className="text-slate-300">{getPropertyName(visit)}</span></div>
+                    <div className="col-span-2 min-w-0 truncate"><span className="text-slate-500">When:</span> <span className="text-slate-300">{formatDate(visit.dateTime)}</span></div>
+                    <div className="col-span-2 min-w-0 truncate"><span className="text-slate-500">Session:</span> <span className="text-slate-400 font-mono">{visit.sessionId}</span></div>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      onClick={() => openEditModal(visit)}
+                      className="flex-1 px-3 py-1.5 rounded-lg text-xs border border-slate-700 text-slate-200 hover:bg-slate-800/60"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => void removeVisit(visit._id)}
+                      className="flex-1 px-3 py-1.5 rounded-lg text-xs border border-rose-500/40 text-rose-300 hover:bg-rose-500/10 inline-flex items-center justify-center gap-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            </>
           )}
         </div>
       </div>
 
       {showModal && (
         <div
-          className="fixed inset-0 z-50 bg-black/55 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/55 flex items-center justify-center p-4 overflow-y-auto"
           onClick={(event) => {
             if (event.target === event.currentTarget && !saving) {
               closeModal();
             }
           }}
         >
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-700/70 bg-slate-900 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-700/70 bg-slate-900 shadow-2xl flex flex-col max-h-[calc(100dvh-2rem)]">
+            <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4 flex-shrink-0">
               <h2 className="text-white text-lg font-semibold">{editingVisit ? "Edit Visit" : "Create Visit"}</h2>
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white flex-shrink-0"
               >
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-y-auto overscroll-contain min-h-0">
               <label className="space-y-1">
                 <span className="text-xs text-slate-400">Agent *</span>
                 <select
@@ -546,7 +596,7 @@ export default function Visits() {
               </label>
             </div>
 
-            <div className="border-t border-slate-800 px-5 py-4 flex justify-end gap-2">
+            <div className="border-t border-slate-800 px-5 py-4 flex justify-end gap-2 flex-shrink-0">
               <button
                 type="button"
                 onClick={closeModal}

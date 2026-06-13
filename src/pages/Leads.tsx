@@ -214,7 +214,8 @@ export default function Leads() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-800/70">
@@ -345,6 +346,98 @@ export default function Leads() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile card list — stacked records (table is unusable on phones) */}
+            <div className="md:hidden divide-y divide-slate-800/40">
+              {logic.leads.map((lead) => {
+                const canManage = logic.canManageLead(lead);
+                return (
+                  <div key={lead._id} className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-sm text-white font-semibold break-words">{leadDisplayName(lead)}</div>
+                        <div className="text-xs text-slate-400 mt-0.5 break-all">{leadDisplayEmail(lead)}</div>
+                        <div className="text-xs text-slate-400 break-all">{leadDisplayPhone(lead)}</div>
+                      </div>
+                      <span className={`shrink-0 text-[11px] border rounded-full px-2 py-1 ${qualityClass[lead.leadQuality || "cold"]}`}>
+                        {(lead.leadQuality || "cold").replace("_", " ")}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                      <div className="min-w-0"><span className="text-slate-500">Score:</span> <span className="text-slate-200">{lead.leadScore ?? 0}</span></div>
+                      <div className="min-w-0 truncate"><span className="text-slate-500">Owner:</span> <span className="text-slate-200">{lead.ownerName}</span></div>
+                      <div className="min-w-0 truncate"><span className="text-slate-500">Agent:</span> <span className="text-slate-300">{agentMap.get(lead.agent) || lead.agent || "-"}</span></div>
+                      <div className="min-w-0 truncate"><span className="text-slate-500">Property:</span> <span className="text-slate-300">{lead.property ? propertyMap.get(lead.property) || lead.property : "-"}</span></div>
+                      <div className="col-span-2 min-w-0 truncate"><span className="text-slate-500">Updated:</span> <span className="text-slate-300">{formatDate(lead.updatedAt || lead.createdAt)}</span></div>
+                    </div>
+
+                    <div className="mt-3 flex items-center gap-2">
+                      <select
+                        value={lead.status}
+                        onChange={(e) => logic.updateLeadStatus(lead._id, e.target.value as LeadStatus)}
+                        disabled={!canManage}
+                        title={canManage ? "Update lead status" : "Only lead owner or organization admin/owner can update"}
+                        className={`flex-1 min-w-0 text-xs border rounded-lg px-2 py-1.5 bg-transparent ${statusClass[lead.status]}`}
+                      >
+                        {statusOptions
+                          .filter((option) => option.value !== "all")
+                          .map((option) => (
+                            <option key={option.value} value={option.value} className="bg-slate-900 text-slate-100">
+                              {option.label}
+                            </option>
+                          ))}
+                      </select>
+                      <button
+                        onClick={() => logic.setSelectedLead(lead)}
+                        className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors"
+                        aria-label="View lead details"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => logic.openEditModal(lead)}
+                        disabled={!canManage}
+                        className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors disabled:opacity-60"
+                        aria-label="Edit lead"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => logic.deleteLead(lead._id)}
+                        disabled={logic.deletingLeadId === lead._id || !logic.canDeleteLead(lead)}
+                        className="p-2 rounded-lg text-rose-300 hover:text-rose-200 hover:bg-rose-500/15 transition-colors disabled:opacity-60"
+                        aria-label="Delete lead"
+                      >
+                        {logic.deletingLeadId === lead._id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    {(lead.agent || lead.property) && (
+                      <div className="mt-2 flex flex-wrap items-center gap-3">
+                        {lead.agent ? (
+                          <button
+                            onClick={() => navigate(`/avatars?focusAgentId=${encodeURIComponent(lead.agent)}`)}
+                            className="inline-flex items-center gap-1 text-[11px] text-cyan-300 hover:text-cyan-200"
+                          >
+                            View Agent <ArrowUpRight className="w-3 h-3" />
+                          </button>
+                        ) : null}
+                        {lead.property ? (
+                          <button
+                            onClick={() => navigate(`/properties?focusPropertyId=${encodeURIComponent(lead.property || "")}`)}
+                            className="inline-flex items-center gap-1 text-[11px] text-blue-300 hover:text-blue-200"
+                          >
+                            View Property <ArrowUpRight className="w-3 h-3" />
+                          </button>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            </>
           )}
         </div>
       </div>
@@ -415,9 +508,9 @@ function LeadDetailsModal({
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
-      <div className="w-full max-w-3xl rounded-2xl border border-slate-700/60 bg-gradient-to-br from-slate-900 to-[#0d1b34] shadow-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-slate-900/95 border-b border-slate-700/50 p-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center overflow-y-auto">
+      <div className="w-full max-w-3xl rounded-2xl border border-slate-700/60 bg-gradient-to-br from-slate-900 to-[#0d1b34] shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto">
+        <div className="sticky top-0 z-10 bg-slate-900/95 border-b border-slate-700/50 p-4 flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold text-white">{leadDisplayName(lead)}</h3>
             <p className="text-sm text-slate-400">Lead ID: {lead._id}</p>
@@ -560,16 +653,16 @@ function LeadFormModal({
   onSubmit: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
-      <div className="w-full max-w-2xl rounded-2xl border border-slate-700/60 bg-gradient-to-br from-slate-900 to-[#0d1b34] shadow-2xl">
-        <div className="p-5 border-b border-slate-700/50 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center overflow-y-auto">
+      <div className="w-full max-w-2xl rounded-2xl border border-slate-700/60 bg-gradient-to-br from-slate-900 to-[#0d1b34] shadow-2xl flex flex-col max-h-[calc(100dvh-2rem)]">
+        <div className="p-5 border-b border-slate-700/50 flex items-center justify-between flex-shrink-0">
           <h3 className="text-xl font-bold text-white">{mode === "create" ? "Create Lead" : "Edit Lead"}</h3>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/60">
+          <button onClick={onClose} className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/60 flex-shrink-0">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-y-auto overscroll-contain min-h-0">
           <div>
             <label className="text-xs text-slate-400 uppercase tracking-wide">Agent *</label>
             <select
@@ -678,7 +771,7 @@ function LeadFormModal({
           </div>
         </div>
 
-        <div className="p-5 border-t border-slate-700/50 flex justify-end gap-3">
+        <div className="p-5 border-t border-slate-700/50 flex justify-end gap-3 flex-shrink-0">
           <button
             onClick={onClose}
             disabled={submitting}

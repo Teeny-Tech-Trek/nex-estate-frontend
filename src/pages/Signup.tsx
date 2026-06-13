@@ -146,6 +146,8 @@ const Signup: React.FC = () => {
     email: urlParams.get('email') || undefined,
     firstName: urlParams.get('firstName') || undefined,
     lastName: urlParams.get('lastName') || undefined,
+    companyName: urlParams.get('companyName') || undefined,
+    accountType: (urlParams.get('accountType') as 'individual' | 'organization' | undefined) || undefined,
   };
 
   const {

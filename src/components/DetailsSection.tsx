@@ -1,5 +1,6 @@
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 
 // ─────────────────────────────────────────────
@@ -141,6 +142,7 @@ const DetailSection: React.FC = () => {
 
   const [form, setForm] = useState({ name: "", email: "", agency: "" });
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -148,6 +150,26 @@ const DetailSection: React.FC = () => {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // Carry whatever the visitor typed here into the Signup page (read there from
+  // the query string) and redirect them to complete sign-up.
+  const handleStartFreeTrial = () => {
+    const trimmedName = form.name.trim();
+    const [firstName, ...rest] = trimmedName.split(/\s+/);
+    const lastName = rest.join(" ");
+
+    const params = new URLSearchParams();
+    if (firstName) params.set("firstName", firstName);
+    if (lastName) params.set("lastName", lastName);
+    if (form.email.trim()) params.set("email", form.email.trim());
+    if (form.agency.trim()) {
+      params.set("companyName", form.agency.trim());
+      params.set("accountType", "organization");
+    }
+
+    const query = params.toString();
+    navigate(query ? `/signup?${query}` : "/signup");
+  };
 
   return (
     <section
@@ -576,6 +598,8 @@ const DetailSection: React.FC = () => {
 
                 {/* CTA */}
                 <motion.button
+                  type="button"
+                  onClick={handleStartFreeTrial}
                   whileHover={{ scale: 1.03, boxShadow: "0 0 50px rgba(108,63,197,0.65)" }}
                   whileTap={{ scale: 0.97 }}
                   className="cta-btn w-full mt-4 py-3 rounded-lg text-white font-black body-font flex items-center justify-center gap-2 relative z-10"
@@ -603,7 +627,7 @@ const DetailSection: React.FC = () => {
                     },
                     {
                       icon: <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M3 10h18" stroke="currentColor" strokeWidth="1.8"/><path d="M8 2v3M16 2v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>,
-                      label: "Free 14-day trial",
+                      label: "Start as free trial",
                     },
                   ].map((t) => (
                     <div key={t.label} className="flex items-center gap-1.5 landing-meta" style={{ color: "rgba(255,255,255,0.55)" }}>

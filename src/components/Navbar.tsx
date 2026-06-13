@@ -51,7 +51,7 @@ const Navbar = () => {
     }
   };
 
-  const navLinks = [
+  const navLinks: { label: string; href: string; active?: boolean; dropdown?: boolean }[] = [
     { label: "Home", href: "/", active: true },
     { label: "Features", href: "#features" },
     // { label: "Pricing", href: "#pricing" },
@@ -146,7 +146,7 @@ const Navbar = () => {
 
           {/* ── Desktop auth ── */}
           <div className="hidden md:flex items-center" style={{ gap: "clamp(8px, 0.8vw, 14px)" }}>
-            <a href="/dashboard">
+            <a href="/login">
               <motion.button
                 className="rounded-xl font-bold text-white"
                 style={{
@@ -228,7 +228,7 @@ const Navbar = () => {
                   </motion.a>
                 ))}
                 <div className="flex gap-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.09)" }}>
-                  <a href="/dashboard" className="flex-1">
+                  <a href="/login" className="flex-1">
                     <motion.button
                       className="w-full py-3 rounded-xl text-[14px] font-bold text-white"
                       style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.16)" }}

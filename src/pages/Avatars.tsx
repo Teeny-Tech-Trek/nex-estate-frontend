@@ -418,36 +418,38 @@ export default function Avatars() {
       {/* ── Create Agent Modal ─────────────────────────────────────────────── */}
       {showCreateModal && (
         <Modal onClose={() => setShowCreateModal(false)}>
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 max-w-md w-11/12 max-h-[85vh] overflow-y-auto shadow-2xl mx-auto">
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 max-w-md w-full max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden shadow-2xl mx-auto">
             {/* Modal Header */}
-            <div className="relative flex items-center justify-between p-8 border-b border-slate-700/50">
+            <div className="relative flex items-center justify-between gap-3 p-5 sm:p-8 border-b border-slate-700/50 flex-shrink-0">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-t-2xl" />
-              <div className="relative">
+              <div className="relative min-w-0">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white">Create AI Agent</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white truncate">Create AI Agent</h2>
                 </div>
-                <p className="text-slate-400 text-sm ml-13">Configure your intelligent sales assistant</p>
+                <p className="text-slate-400 text-sm">Configure your intelligent sales assistant</p>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="relative p-2.5 hover:bg-slate-700/50 rounded-xl transition-all duration-200 group"
+                className="relative p-2.5 hover:bg-slate-700/50 rounded-xl transition-all duration-200 group flex-shrink-0"
               >
                 <X className="w-6 h-6 text-slate-400 group-hover:text-white group-hover:rotate-90 transition-all duration-300" />
               </button>
             </div>
 
+            {/* Scrollable body */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain min-h-0">
             {/* Plan usage info */}
-            <div className="mx-8 mt-8">
-              <div className="relative overflow-hidden bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-5">
+            <div className="mx-5 mt-5 sm:mx-8 sm:mt-8">
+              <div className="relative overflow-hidden bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-4 sm:p-5">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent" />
                 <div className="relative flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Zap className="w-6 h-6 text-blue-400" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <h4 className="text-blue-100 font-semibold text-lg mb-1">
                       {Math.max(0, maxAgents - totalAgents)} Agent Slots Available
                     </h4>
@@ -461,7 +463,7 @@ export default function Avatars() {
             </div>
 
             {/* Form */}
-              <div className="p-8 space-y-8">
+              <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
                 {formError && (
                   <div className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
                     {formError}
@@ -589,22 +591,23 @@ export default function Avatars() {
               </div>
             </div>
 
+            </div>
             {/* Modal Footer */}
-            <div className="flex items-center justify-between gap-4 p-8 border-t border-slate-700/50 bg-slate-900/30">
-              <p className="text-sm text-slate-400">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-5 sm:p-8 border-t border-slate-700/50 bg-slate-900/30 flex-shrink-0">
+              <p className="text-sm text-slate-400 hidden sm:block">
                 <span className="text-slate-300 font-medium">Tip:</span> Clear descriptions lead to better agent performance
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="px-6 py-3 border border-slate-700/50 text-slate-300 rounded-xl hover:bg-slate-700/30 hover:border-slate-600/50 transition-all duration-200 font-semibold"
+                  className="flex-1 sm:flex-none justify-center px-6 py-3 border border-slate-700/50 text-slate-300 rounded-xl hover:bg-slate-700/30 hover:border-slate-600/50 transition-all duration-200 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateAgent}
                   disabled={!formData.name || !formData.personality || !formData.description || loading}
-                  className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 disabled:hover:scale-100 disabled:shadow-none flex items-center gap-2"
+                  className="group flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 disabled:hover:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
                 >
                   {loading ? 'Creating...' : 'Create Agent'}
                   <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -1036,9 +1039,9 @@ function NoResultsState() {
 /** Generic full-screen overlay modal — children rendered via flex for natural scroll */
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full my-8">{children}</div>
+      <div className="relative z-10 w-full flex justify-center">{children}</div>
     </div>
   );
 }
@@ -1049,11 +1052,11 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
  */
 function CenteredModal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      {/* Content — always centred, never wider than its max-w */}
-      <div className="relative z-10 w-full flex justify-center">{children}</div>
+      {/* Content — always centred, never wider than its max-w, scrolls if tall */}
+      <div className="relative z-10 w-full max-h-[calc(100dvh-2rem)] overflow-y-auto flex justify-center">{children}</div>
     </div>
   );
 }

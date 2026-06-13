@@ -120,7 +120,7 @@ function use3DTilt(deg = 4) {
 }
 
 const PricingCard: React.FC<{
-  plan: (typeof PLANS)[0];
+  plan: (typeof FALLBACK_PLANS)[0];
   index: number;
 }> = ({ plan, index }) => {
   const tilt = use3DTilt(plan.popular ? 3 : 4);

@@ -266,12 +266,16 @@ const Features: React.FC = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Autoplay — pauses on hover
+  // Autoplay — pauses on hover.
+  // `activeIndex` is in the deps so ANY change (manual click, drag, keyboard,
+  // dot) restarts the timer with a fresh 4500ms countdown. Without this, a
+  // manual "next" click landing right before an autoplay tick advanced the
+  // carousel twice in one click.
   useEffect(() => {
     if (!autoplay) return;
     const id = setInterval(() => setActiveIndex(prev => (prev + 1) % total), 4500);
     return () => clearInterval(id);
-  }, [autoplay, total]);
+  }, [autoplay, total, activeIndex]);
 
   // Keyboard nav
   useEffect(() => {
@@ -528,7 +532,11 @@ const Features: React.FC = () => {
           </motion.div>
         </motion.div>
 
-        <div className="carousel-controls">
+        <div
+          className="carousel-controls"
+          onMouseEnter={() => setAutoplay(false)}
+          onMouseLeave={() => setAutoplay(true)}
+        >
           <button className="carousel-arrow" onClick={prev} aria-label="Previous feature">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6"/>
