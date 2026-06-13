@@ -581,7 +581,7 @@ const PropertyViewDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-[#0d1b33] border border-slate-800/60 text-white p-0 overflow-hidden rounded-2xl shadow-2xl shadow-black/60 [&>button]:hidden">
+      <DialogContent className="max-w-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto bg-[#0d1b33] border border-slate-800/60 text-white p-0 rounded-2xl shadow-2xl shadow-black/60 [&>button]:hidden">
 
         {/* Hero Image */}
         <div className="relative h-64 overflow-hidden">

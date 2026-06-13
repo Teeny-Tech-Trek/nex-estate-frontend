@@ -143,7 +143,7 @@ const Settings: React.FC = () => {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full font-semibold text-xs sm:text-sm transition-all whitespace-nowrap ${
+                className={`relative flex flex-shrink-0 items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full font-semibold text-xs sm:text-sm transition-all whitespace-nowrap ${
                   activeTab === id
                     ? 'bg-white text-slate-900'
                     : 'bg-slate-900/30 border border-slate-800/50 text-slate-400 hover:bg-slate-900/50 hover:text-slate-300'

@@ -881,39 +881,39 @@ const PropertyFormModal = ({
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="basic" className="w-full">
-          <div className="px-8 pt-6">
-            <TabsList className="grid w-full grid-cols-5 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/50 backdrop-blur-sm">
+          <div className="px-4 sm:px-8 pt-6">
+            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto gap-1 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/50 backdrop-blur-sm">
               <TabsTrigger 
                 value="basic" 
-                className="rounded-lg text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
+                className="rounded-lg text-xs sm:text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Basic Info
               </TabsTrigger>
               <TabsTrigger 
                 value="details" 
-                className="rounded-lg text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
+                className="rounded-lg text-xs sm:text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
               >
                 <Building2 className="w-4 h-4 mr-2" />
                 Details
               </TabsTrigger>
               <TabsTrigger 
                 value="analytics" 
-                className="rounded-lg text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
+                className="rounded-lg text-xs sm:text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Analytics
               </TabsTrigger>
               <TabsTrigger 
                 value="risks" 
-                className="rounded-lg text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
+                className="rounded-lg text-xs sm:text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
               >
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 Risk
               </TabsTrigger>
               <TabsTrigger 
                 value="amenities" 
-                className="rounded-lg text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
+                className="rounded-lg text-xs sm:text-sm font-medium text-slate-400 transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/25"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Amenities
@@ -922,10 +922,10 @@ const PropertyFormModal = ({
           </div>
 
           {/* Tab Content Area with Scroll */}
-          <div className="px-8 pb-6 overflow-y-auto" style={{ maxHeight: "calc(92vh - 280px)" }}>
+          <div className="px-4 sm:px-8 pb-6 overflow-y-auto" style={{ maxHeight: "calc(92vh - 280px)" }}>
             <TabsContent value="basic" className="space-y-6 mt-6">
               {/* Property Title and Price */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-300 flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-blue-400" />
@@ -982,7 +982,7 @@ const PropertyFormModal = ({
               </div>
 
               {/* Property Type and Status */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-300">Property Type</Label>
                   <Select
@@ -1068,7 +1068,7 @@ const PropertyFormModal = ({
                   </label>
                 </div>
                 {previews.length > 0 && (
-                  <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                     {previews.map((preview, index) => (
                       <div key={index} className="relative group">
                         <img
@@ -1096,7 +1096,7 @@ const PropertyFormModal = ({
 
             <TabsContent value="details" className="space-y-6 mt-6">
               {/* Property Specifications */}
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-300">Bedrooms</Label>
                   <Input
@@ -1138,7 +1138,7 @@ const PropertyFormModal = ({
               {/* Area */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-slate-300">Total Area</Label>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <Input
                     name="area"
                     placeholder="2400"
@@ -1150,7 +1150,7 @@ const PropertyFormModal = ({
                     value={propertyData.areaUnit}
                     onValueChange={(value) => setPropertyData({ ...propertyData, areaUnit: value })}
                   >
-                    <SelectTrigger className="w-32 bg-slate-900/50 border-slate-700/50 text-white h-12 rounded-lg">
+                    <SelectTrigger className="w-full sm:w-32 bg-slate-900/50 border-slate-700/50 text-white h-12 rounded-lg">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-900 border-slate-700">
@@ -1190,7 +1190,7 @@ const PropertyFormModal = ({
               </div>
 
               {/* Key Metrics */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3">
                   <MetricCard 
                     label="Investment Potential" 
@@ -1225,7 +1225,7 @@ const PropertyFormModal = ({
               </div>
 
               {/* Financial Metrics */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-300">Rental Yield (%)</Label>
                   <Input
@@ -1314,8 +1314,8 @@ const PropertyFormModal = ({
                       key={index}
                       className="p-5 border border-slate-700/50 rounded-xl bg-slate-900/30 hover:bg-slate-900/50 transition-all"
                     >
-                      <div className="grid grid-cols-12 gap-4">
-                        <div className="col-span-4 space-y-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                        <div className="sm:col-span-4 space-y-2">
                           <Label className="text-xs font-medium text-slate-400">Hazard Type</Label>
                           <Select
                             value={hazard.type}
@@ -1336,7 +1336,7 @@ const PropertyFormModal = ({
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="col-span-3 space-y-2">
+                        <div className="sm:col-span-3 space-y-2">
                           <Label className="text-xs font-medium text-slate-400">Risk Level</Label>
                           <Select
                             value={hazard.level}
@@ -1354,7 +1354,7 @@ const PropertyFormModal = ({
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="col-span-4 space-y-2">
+                        <div className="sm:col-span-4 space-y-2">
                           <Label className="text-xs font-medium text-slate-400">Description</Label>
                           <Input
                             placeholder="Additional details..."
@@ -1363,7 +1363,7 @@ const PropertyFormModal = ({
                             className="bg-slate-800 border-slate-700 text-white h-11 rounded-lg"
                           />
                         </div>
-                        <div className="col-span-1 flex items-end">
+                        <div className="sm:col-span-1 flex items-end">
                           <Button
                             variant="ghost"
                             size="sm"

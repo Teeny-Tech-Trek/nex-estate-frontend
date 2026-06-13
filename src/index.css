@@ -165,6 +165,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
+    /* Prevent stray horizontal scrolling app-wide; intentional scroll
+       containers (tables, carousels) manage their own overflow-x. */
+    overflow-x: hidden;
   }
 
   /* Premium Scrollbar */

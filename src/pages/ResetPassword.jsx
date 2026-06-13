@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CircleCheckBig } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { resetPassword } from "../services/api";
 
