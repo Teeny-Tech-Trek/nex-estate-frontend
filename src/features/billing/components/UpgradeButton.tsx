@@ -10,6 +10,7 @@ import * as billingService from '../services/billing.service';
 import type { RazorpayPaymentResponse } from '../types/billing.types';
 import { isPaymentsDisabledError } from '@/config/paymentToggle';
 import PaymentsDisabledModal from './PaymentsDisabledModal';
+import ContactSalesModal from './ContactSalesModal';
 
 interface UpgradeButtonProps {
   planId: string;
@@ -25,12 +26,6 @@ interface UpgradeButtonProps {
   userName?: string;
 }
 
-// Read from Vite env at build time; fall back to a sensible default so the
-// button always has something to mailto. Override via VITE_SUPPORT_EMAIL.
-const SUPPORT_EMAIL =
-  (import.meta.env.VITE_SUPPORT_EMAIL as string | undefined) ||
-  'sales@nexestate.techtrekkers.ai';
-
 export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
   planId,
   planName,
@@ -45,6 +40,7 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentsDisabledOpen, setPaymentsDisabledOpen] = useState(false);
+  const [contactSalesOpen, setContactSalesOpen] = useState(false);
   const { toast } = useToast();
 
   const isFreePlan = (planSlug || planName).toLowerCase() === 'free';
@@ -70,13 +66,9 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
     }
 
     if (isContactOnly) {
-      // Enterprise — open the user's mail client pre-filled with a sales
-      // enquiry. No Razorpay; the sales team handles activation manually.
-      const subject = encodeURIComponent('NexEstate Enterprise enquiry');
-      const body = encodeURIComponent(
-        `Hi NexEstate team,\n\nI'd like to discuss the Enterprise plan.\n\nName: ${userName || ''}\nEmail: ${userEmail || ''}\n\n— Tell us about your needs:\n`,
-      );
-      window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+      // Enterprise — open a professional Contact Sales dialog. No Razorpay;
+      // the sales team handles activation manually after the user reaches out.
+      setContactSalesOpen(true);
       return;
     }
 
@@ -195,6 +187,10 @@ export const UpgradeButton: React.FC<UpgradeButtonProps> = ({
       open={paymentsDisabledOpen}
       onClose={() => setPaymentsDisabledOpen(false)}
       planName={planName}
+    />
+    <ContactSalesModal
+      open={contactSalesOpen}
+      onClose={() => setContactSalesOpen(false)}
     />
     <button
       onClick={handleUpgradeClick}
