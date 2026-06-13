@@ -320,27 +320,29 @@ export default function Avatars() {
                 <span className="text-xs text-slate-500 font-medium">Agents Used</span>
               </div>
 
-              <button
-                onClick={fetchAgents}
-                disabled={loading}
-                className="p-2.5 sm:p-3 bg-slate-900/40 border border-slate-800/50 rounded-full hover:bg-slate-800/50 hover:border-slate-700/50 transition-all duration-200 backdrop-blur-sm group disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 text-slate-400 group-hover:text-slate-300 transition-all duration-500 ${loading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
-              </button>
+              <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <button
+                  onClick={fetchAgents}
+                  disabled={loading}
+                  className="flex-shrink-0 p-2.5 sm:p-3 bg-slate-900/40 border border-slate-800/50 rounded-full hover:bg-slate-800/50 hover:border-slate-700/50 transition-all duration-200 backdrop-blur-sm group disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 text-slate-400 group-hover:text-slate-300 transition-all duration-500 ${loading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
+                </button>
 
-              <button
-                onClick={() => setShowCreateModal(true)}
-                disabled={totalAgents >= maxAgents}
-                className="w-full sm:w-auto group flex items-center justify-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-slate-100 disabled:bg-slate-800 disabled:text-slate-500 text-slate-900 rounded-full font-semibold transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:border disabled:border-slate-700"
-              >
-                <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
-                Create Agent
-              </button>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  disabled={totalAgents >= maxAgents}
+                  className="flex-1 sm:flex-none group flex items-center justify-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-slate-100 disabled:bg-slate-800 disabled:text-slate-500 text-slate-900 rounded-full font-semibold transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:border disabled:border-slate-700 whitespace-nowrap"
+                >
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                  Create Agent
+                </button>
+              </div>
             </div>
           </div>
 
           {/* ── KPI Stats ───────────────────────────────────────────────── */}
-          <div className="relative mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+          <div className="relative mb-8 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               value={totalAgents.toLocaleString()}
               label="Total Agents"

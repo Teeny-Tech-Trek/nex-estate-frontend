@@ -177,7 +177,7 @@ const AppLayout = () => {
                 )}
               </Button>
               {showNotificationDropdown && (
-                <div className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-24px))] max-h-[min(24rem,70vh)] bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-y-auto overflow-x-hidden">
+                <div className="fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 top-16 sm:top-full mt-0 sm:mt-2 w-auto sm:w-80 max-h-[min(70vh,24rem)] bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-y-auto overflow-x-hidden overscroll-contain">
                   <div className="p-3 border-b font-semibold text-gray-800 flex items-center justify-between">
                     Notifications
                     {loadingNotifications && <span className="text-xs text-gray-400 ml-2">Loading...</span>}

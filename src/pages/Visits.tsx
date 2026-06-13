@@ -304,7 +304,7 @@ export default function Visits() {
             </div>
           </div>
 
-          <div className="flex gap-2.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 lg:gap-3">
             <StatCard icon={<CalendarCheck2 className="w-4 h-4 text-cyan-300" />} label="Total" value={displayStats.total} />
             <StatCard icon={<CalendarCheck2 className="w-4 h-4 text-blue-300" />} label="Scheduled" value={displayStats.scheduled} />
             <StatCard icon={<CheckCircle2 className="w-4 h-4 text-emerald-300" />} label="Completed" value={displayStats.completed} />
@@ -623,7 +623,7 @@ export default function Visits() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
-    <div className="shrink-0 min-w-[128px] rounded-full border border-slate-700/40 bg-slate-900/20 px-3 py-2 sm:min-w-0 sm:rounded-xl sm:border-slate-800/60 sm:bg-slate-900/35 sm:px-4 sm:py-3">
+    <div className="min-w-0 rounded-full border border-slate-700/40 bg-slate-900/20 px-3 py-2 sm:rounded-xl sm:border-slate-800/60 sm:bg-slate-900/35 sm:px-4 sm:py-3">
       <div className="flex items-center gap-2 sm:justify-between">
         <span className="text-[11px] sm:text-xs text-slate-400 uppercase tracking-wide">{label}</span>
         <span>{icon}</span>

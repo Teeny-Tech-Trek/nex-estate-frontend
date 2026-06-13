@@ -125,9 +125,9 @@ const Properties: React.FC = () => {
               <p className="text-slate-400" style={{ fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)" }}>Manage your real estate portfolio</p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto">
               {/* Usage pill */}
-              <div className="flex items-center gap-4 px-5 py-3 bg-slate-900/40 border border-slate-800/50 rounded-full backdrop-blur-sm">
+              <div className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-4 px-5 py-3 bg-slate-900/40 border border-slate-800/50 rounded-full backdrop-blur-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full" />
                   <span className="text-white font-bold text-sm">{stats.total}</span>
@@ -135,27 +135,29 @@ const Properties: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => void fetchProperties()}
-                className="p-3 bg-slate-900/40 border border-slate-800/50 rounded-full hover:bg-slate-800/50 hover:border-slate-700/50 transition-all duration-200 backdrop-blur-sm group"
-              >
-                <Lucide.RefreshCw className="w-4 h-4 text-slate-400 group-hover:text-slate-300 group-hover:rotate-180 transition-all duration-500" />
-              </button>
+              <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => void fetchProperties()}
+                  className="flex-shrink-0 p-3 bg-slate-900/40 border border-slate-800/50 rounded-full hover:bg-slate-800/50 hover:border-slate-700/50 transition-all duration-200 backdrop-blur-sm group"
+                >
+                  <Lucide.RefreshCw className="w-4 h-4 text-slate-400 group-hover:text-slate-300 group-hover:rotate-180 transition-all duration-500" />
+                </button>
 
-              <button
-                type="button"
-                onClick={openAddModal}
-                className="group flex items-center gap-2.5 px-6 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-full font-semibold transition-all duration-200 hover:scale-105"
-              >
-                <Lucide.Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
-                Add Property
-              </button>
+                <button
+                  type="button"
+                  onClick={openAddModal}
+                  className="flex-1 sm:flex-none group flex items-center justify-center gap-2.5 px-6 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-full font-semibold transition-all duration-200 hover:scale-105 whitespace-nowrap"
+                >
+                  <Lucide.Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                  Add Property
+                </button>
+              </div>
             </div>
           </div>
 
           {/* ── KPI Stats — same layout as Avatars ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 px-0 sm:px-2 mb-10">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 px-0 sm:px-2 mb-10">
             <KpiStat value={stats.total} label="Total Properties" sub={`${stats.available} available`} />
             <KpiStat value={stats.available} label="Available" sub={`${availableRate}% available rate`} />
             <KpiStat value={stats.sold} label="Sold" sub={`${soldRate}% sold share`} />
@@ -719,35 +721,35 @@ const PropertyViewDialog = ({
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Actions — 2x2 grid on mobile, Delete spans full width from sm up */}
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={() => { onClose(); onLeads(); }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all duration-200 text-sm font-medium"
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
-              <Lucide.Users className="w-4 h-4" /> View Leads
+              <Lucide.Users className="w-4 h-4 flex-shrink-0" /> View Leads
             </button>
             <button
               type="button"
               onClick={() => { onClose(); onVisits(); }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all duration-200 text-sm font-medium"
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-500/40 transition-all duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
-              <Lucide.CalendarCheck2 className="w-4 h-4" /> View Visits
+              <Lucide.CalendarCheck2 className="w-4 h-4 flex-shrink-0" /> View Visits
             </button>
             <button
               type="button"
               onClick={() => { onClose(); onEdit(); }}
-              className="flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-800/50 border border-slate-700/50 text-slate-300 rounded-xl hover:bg-slate-800 hover:border-slate-600/50 hover:text-white transition-all duration-200 text-xs sm:text-sm font-medium"
+              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 text-slate-300 rounded-xl hover:bg-slate-800 hover:border-slate-600/50 hover:text-white transition-all duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
-              <Lucide.Pencil className="w-4 h-4" /> Edit Property
+              <Lucide.Pencil className="w-4 h-4 flex-shrink-0" /> Edit Property
             </button>
             <button
               type="button"
               onClick={() => { onClose(); onDelete(); }}
-              className="sm:col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl hover:bg-red-500/20 hover:border-red-500/40 transition-all duration-200 text-sm font-medium"
+              className="sm:col-span-2 flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl hover:bg-red-500/20 hover:border-red-500/40 transition-all duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
             >
-              <Lucide.Trash2 className="w-4 h-4" /> Delete
+              <Lucide.Trash2 className="w-4 h-4 flex-shrink-0" /> Delete
             </button>
           </div>
         </div>
