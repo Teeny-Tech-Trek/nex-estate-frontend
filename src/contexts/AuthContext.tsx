@@ -105,9 +105,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAuth({ user: normalizedUser, tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken || getCookie('refreshToken') || null } });
       toast({ title: 'Welcome back!', description: 'You have successfully signed in.' });
     } catch (error: unknown) {
+      const axiosErr = error as {
+        response?: { status?: number; data?: { message?: string; error?: string } };
+      };
+      const status = axiosErr?.response?.status;
+      const serverMessage =
+        axiosErr?.response?.data?.message || axiosErr?.response?.data?.error;
+      const description =
+        status === 401 || status === 400
+          ? 'Invalid email or password'
+          : serverMessage || 'Invalid email or password';
       toast({
         title: 'Login failed',
-        description: error instanceof Error ? error.message : 'Please check your credentials and try again.',
+        description,
         variant: 'destructive',
       });
       throw error;

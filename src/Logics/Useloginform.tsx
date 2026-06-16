@@ -69,10 +69,23 @@ export const useLoginForm = () => {
       }, 500);
     } catch (err: unknown) {
       console.error('Login error:', err);
-      if (err instanceof Error) {
-        setError(err.message);
+      const axiosErr = err as {
+        response?: { status?: number; data?: { message?: string; error?: string } };
+      };
+      const status = axiosErr?.response?.status;
+      const serverMessage =
+        axiosErr?.response?.data?.message || axiosErr?.response?.data?.error;
+
+      if (status === 401 || status === 400) {
+        // Wrong email/password — show a clear, friendly message instead of a
+        // raw "Request failed…" / "Network Error" string.
+        setError('Invalid email or password');
+      } else if (serverMessage) {
+        setError(serverMessage);
       } else {
-        setError('Login failed. Please try again.');
+        // No usable response (the failed /auth/login most commonly means bad
+        // credentials in this app) — surface the same friendly message.
+        setError('Invalid email or password');
       }
       setIsLoading(false);
     }
