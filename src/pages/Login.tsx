@@ -582,9 +582,12 @@ const SignIn: React.FC = () => {
         navigate(from || "/dashboard", { replace: true });
       }, 250);
     } catch (error: unknown) {
-      const message = error instanceof Error
-        ? error.message
-        : "Something went wrong. Please check your credentials and try again.";
+      const axiosErr = error as any;
+      const message =
+        axiosErr?.mapped?.message ||
+        axiosErr?.response?.data?.message ||
+        axiosErr?.message ||
+        "Something went wrong. Please check your credentials and try again.";
       setSubmitError(message);
       setSubmitStatus("error");
       window.setTimeout(() => setSubmitStatus("idle"), 3500);
