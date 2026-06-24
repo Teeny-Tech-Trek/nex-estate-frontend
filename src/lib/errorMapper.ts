@@ -95,14 +95,16 @@ export function mapAxiosError(error: AxiosError<any>): MappedError {
   const serverErrorCode = data?.errorCode || null;
   const traceId = data?.traceId || null;
 
-  // Determine user-friendly message (errorCode takes priority over status)
-  let message: string;
-  if (serverErrorCode && ERROR_CODE_MAP[serverErrorCode]) {
-    message = ERROR_CODE_MAP[serverErrorCode];
-  } else if (STATUS_CODE_MAP[status]) {
-    message = STATUS_CODE_MAP[status];
-  } else {
-    message = data?.message || "An unexpected error occurred.";
+  // Determine user-friendly message (specific server message takes priority)
+  let message: string = data?.message || "";
+  if (!message) {
+    if (serverErrorCode && ERROR_CODE_MAP[serverErrorCode]) {
+      message = ERROR_CODE_MAP[serverErrorCode];
+    } else if (STATUS_CODE_MAP[status]) {
+      message = STATUS_CODE_MAP[status];
+    } else {
+      message = "An unexpected error occurred.";
+    }
   }
 
   return {

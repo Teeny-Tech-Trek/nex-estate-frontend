@@ -109,12 +109,15 @@ export const useSignupForm = (initial?: Partial<SignupFormData>, onboardingToken
       }, 500);
     } catch (err: unknown) {
       console.error('Signup error:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Signup failed. Please try again.');
-      }
+      const axiosErr = err as any;
+      const errorMsg =
+        axiosErr?.mapped?.message ||
+        axiosErr?.response?.data?.message ||
+        axiosErr?.message ||
+        'Signup failed. Please try again.';
+      setError(errorMsg);
       setIsLoading(false);
+      throw new Error(errorMsg);
     }
   };
 

@@ -165,12 +165,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAuth({ user: normalizedUser, tokens: { accessToken: response.accessToken, refreshToken: response.refreshToken || getCookie('refreshToken') || null } });
       toast({ title: 'Account created!', description: 'Welcome to Virtual Sales Platform.' });
     } catch (error: unknown) {
+      const axiosErr = error as any;
+      const description =
+        axiosErr?.mapped?.message ||
+        axiosErr?.response?.data?.message ||
+        axiosErr?.message ||
+        'Please check your information and try again.';
       toast({
         title: 'Signup failed',
-        description: error instanceof Error ? error.message : 'Please check your information and try again.',
+        description,
         variant: 'destructive',
       });
-      throw error;
+      throw new Error(description);
     } finally {
       setLoading(false);
     }

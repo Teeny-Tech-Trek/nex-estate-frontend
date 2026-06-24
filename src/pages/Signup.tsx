@@ -157,6 +157,7 @@ const Signup: React.FC = () => {
     handleChange,
     togglePasswordVisibility,
     navigateToLogin,
+    error: signupError,
   } = useSignupForm(initialData, onboardingToken);
 
   // ── UI-only state (visual feedback + dropdown) ──
@@ -743,14 +744,14 @@ const Signup: React.FC = () => {
 
               {/* Error banner */}
               <AnimatePresence>
-                {submitStatus === "error" && (
+                {(submitStatus === "error" || signupError) && (
                   <motion.div
                     initial={{ opacity: 0, y: -8, height: 0 }}
                     animate={{ opacity: 1, y: 0,  height: "auto" }}
                     exit={{    opacity: 0, y: -8, height: 0 }}
                     className="text-sm rounded-xl px-4 py-3 bg-red-500/10 border border-red-400/30 text-red-200"
                   >
-                    Something went wrong. Please check your details and try again.
+                    {signupError || "Something went wrong. Please check your details and try again."}
                   </motion.div>
                 )}
               </AnimatePresence>
