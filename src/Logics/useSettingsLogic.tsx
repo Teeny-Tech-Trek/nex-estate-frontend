@@ -692,6 +692,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { getFriendlyErrorMessage } from '@/lib/errorMapper';
 import {
   apiService,
   Organization,
@@ -871,7 +872,7 @@ export const useSettingsLogic = () => {
 
       await Promise.allSettled(promises);
     } catch (err: any) {
-      const msg = err?.response?.data?.error || err?.message || 'Failed to load settings';
+      const msg = getFriendlyErrorMessage(err, 'Failed to load settings');
       setError(msg);
       toast({ title: 'Error', description: msg, variant: 'destructive' });
     } finally {
@@ -893,7 +894,7 @@ export const useSettingsLogic = () => {
       });
       toast({ title: 'Success', description: 'Profile updated successfully' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update profile'), variant: 'destructive' });
     }
   }, [profileForm, toast]);
 
@@ -908,7 +909,7 @@ export const useSettingsLogic = () => {
       setOrganization(updated);
       toast({ title: 'Success', description: 'Organization updated successfully' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update organization'), variant: 'destructive' });
     }
   }, [isOwner, orgForm, toast]);
 
@@ -919,7 +920,7 @@ export const useSettingsLogic = () => {
       toast({ title: 'Success', description: 'Organization deleted' });
       window.location.href = '/login';
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to delete organization'), variant: 'destructive' });
     }
   }, [isOwner, toast]);
 
@@ -943,7 +944,7 @@ export const useSettingsLogic = () => {
     } catch (err: any) {
       toast({
         title: 'Error',
-        description: err?.response?.data?.error || err?.message || 'Failed to upgrade account',
+        description: getFriendlyErrorMessage(err, 'Failed to upgrade account'),
         variant: 'destructive',
       });
       throw err;
@@ -968,7 +969,7 @@ export const useSettingsLogic = () => {
       const invites = await apiService.getPendingInvites();
       setPendingInvites(invites);
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to invite member'), variant: 'destructive' });
     }
   }, [canManageTeam, inviteAccountId, inviteEmail, toast]);
 
@@ -978,7 +979,7 @@ export const useSettingsLogic = () => {
       setPendingInvites((prev) => prev.filter((inv) => inv._id !== inviteId));
       toast({ title: 'Success', description: 'Invitation revoked' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to revoke invitation'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -988,7 +989,7 @@ export const useSettingsLogic = () => {
       setTeamMembers((prev) => prev.filter((m) => m.user._id !== memberId));
       toast({ title: 'Success', description: 'Member removed' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to remove member'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1000,7 +1001,7 @@ export const useSettingsLogic = () => {
       );
       toast({ title: 'Success', description: 'Role updated' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update role'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1011,7 +1012,7 @@ export const useSettingsLogic = () => {
       toast({ title: 'Success', description: 'Invitation accepted! Refreshing...' });
       setTimeout(() => window.location.reload(), 1200);
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to accept invitation'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1021,7 +1022,7 @@ export const useSettingsLogic = () => {
       setMyInvites((prev) => prev.filter((inv) => inv._id !== inviteId));
       toast({ title: 'Success', description: 'Invitation declined' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to decline invitation'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1031,7 +1032,7 @@ export const useSettingsLogic = () => {
       await apiService.requestLeave();
       toast({ title: 'Success', description: 'Leave request submitted. Waiting for approval.' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to submit leave request'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1043,7 +1044,7 @@ export const useSettingsLogic = () => {
       setTeamMembers(members);
       toast({ title: 'Success', description: 'Leave request approved' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to approve leave request'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1053,7 +1054,7 @@ export const useSettingsLogic = () => {
       setLeaveRequests((prev) => prev.filter((r) => r._id !== requestId));
       toast({ title: 'Success', description: 'Leave request rejected' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to reject leave request'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1073,7 +1074,7 @@ export const useSettingsLogic = () => {
         toast({ title: 'Success', description: 'Subscription updated' });
       }
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update subscription'), variant: 'destructive' });
     }
   }, [canManageBilling, toast]);
 
@@ -1086,7 +1087,7 @@ export const useSettingsLogic = () => {
       setZillowDialogOpen(false);
       toast({ title: 'Success', description: 'Zillow connected' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to connect Zillow'), variant: 'destructive' });
     }
   }, [zillowCredentials, toast]);
 
@@ -1098,7 +1099,7 @@ export const useSettingsLogic = () => {
       setRealtorDialogOpen(false);
       toast({ title: 'Success', description: 'Realtor.com connected' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to connect Realtor.com'), variant: 'destructive' });
     }
   }, [realtorCredentials, toast]);
 
@@ -1109,7 +1110,7 @@ export const useSettingsLogic = () => {
       setIntegrations(updated);
       toast({ title: 'Success', description: 'Integration disconnected' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to disconnect integration'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1120,7 +1121,7 @@ export const useSettingsLogic = () => {
       setIntegrations(updated);
       toast({ title: 'Success', description: 'Sync complete' });
     } catch (err: any) {
-      toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+      toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to sync integration'), variant: 'destructive' });
     }
   }, [toast]);
 
@@ -1132,7 +1133,7 @@ export const useSettingsLogic = () => {
         setNotificationSettings(updated);
         toast({ title: 'Success', description: 'Notification preferences saved' });
       } catch (err: any) {
-        toast({ title: 'Error', description: err?.response?.data?.error || err?.message, variant: 'destructive' });
+        toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update notification preferences'), variant: 'destructive' });
       }
     },
     [toast]
@@ -1180,7 +1181,7 @@ export const useSettingsLogic = () => {
     } catch (err: any) {
       toast({
         title: 'Error',
-        description: err.response?.data?.message || 'Failed to request account deletion',
+        description: getFriendlyErrorMessage(err, 'Failed to request account deletion'),
         variant: 'destructive',
       });
     }
@@ -1206,7 +1207,7 @@ export const useSettingsLogic = () => {
     } catch (err: any) {
       toast({
         title: 'Error',
-        description: err.response?.data?.message || 'Failed to cancel deletion request',
+        description: getFriendlyErrorMessage(err, 'Failed to cancel deletion request'),
         variant: 'destructive',
       });
     }
@@ -1228,7 +1229,7 @@ export const useSettingsLogic = () => {
     } catch (err: any) {
       toast({
         title: 'Error',
-        description: err.response?.data?.message || 'Failed to load deletion requests',
+        description: getFriendlyErrorMessage(err, 'Failed to load deletion requests'),
         variant: 'destructive',
       });
     }
@@ -1255,7 +1256,7 @@ export const useSettingsLogic = () => {
       } catch (err: any) {
         toast({
           title: 'Error',
-          description: err.response?.data?.message || 'Failed to approve deletion',
+          description: getFriendlyErrorMessage(err, 'Failed to approve deletion'),
           variant: 'destructive',
         });
       }
@@ -1284,7 +1285,7 @@ export const useSettingsLogic = () => {
       } catch (err: any) {
         toast({
           title: 'Error',
-          description: err.response?.data?.message || 'Failed to reject deletion',
+          description: getFriendlyErrorMessage(err, 'Failed to reject deletion'),
           variant: 'destructive',
         });
       }

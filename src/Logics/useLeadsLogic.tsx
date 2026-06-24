@@ -8,6 +8,7 @@ import {
   leadsApiService,
 } from "@/services/leads.api";
 import { User } from "@/types/auth";
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 import {
   CreateLeadPayload,
   Lead,
@@ -145,7 +146,7 @@ export function useLeadsLogic(scope?: { agentId?: string; propertyId?: string })
 
       setLeads(normalized);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to load leads";
+      const message = getFriendlyErrorMessage(err, "Failed to load leads");
       toast({ title: "Error", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
@@ -324,7 +325,7 @@ export function useLeadsLogic(scope?: { agentId?: string; propertyId?: string })
       setEditingLeadId(null);
       await loadLeads();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to save lead";
+      const message = getFriendlyErrorMessage(err, "Failed to save lead");
       toast({ title: "Error", description: message, variant: "destructive" });
     } finally {
       setSubmitting(false);
@@ -350,7 +351,7 @@ export function useLeadsLogic(scope?: { agentId?: string; propertyId?: string })
         toast({ title: "Status updated", description: `Lead moved to ${status}.` });
       } catch (err: unknown) {
         setLeads((prev) => prev.map((item) => (item._id === leadId ? { ...item, status: previousStatus } : item)));
-        const message = err instanceof Error ? err.message : "Failed to update status";
+        const message = getFriendlyErrorMessage(err, "Failed to update status");
         toast({ title: "Error", description: message, variant: "destructive" });
       }
     },
@@ -381,7 +382,7 @@ export function useLeadsLogic(scope?: { agentId?: string; propertyId?: string })
           setSelectedLead(null);
         }
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Failed to delete lead";
+        const message = getFriendlyErrorMessage(err, "Failed to delete lead");
         toast({ title: "Error", description: message, variant: "destructive" });
       } finally {
         setDeletingLeadId(null);

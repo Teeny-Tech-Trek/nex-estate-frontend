@@ -4,6 +4,7 @@ import { exchangeGoogleCode } from '../services/api';
 import { setCookie } from '../lib/utils';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 const GoogleCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const GoogleCallback: React.FC = () => {
         navigate('/login');
       } catch (err: unknown) {
         console.error('Google callback error', err);
-        toast({ title: 'Google sign-in failed', description: err instanceof Error ? err.message : 'Unknown error', variant: 'destructive' });
+        toast({ title: 'Google sign-in failed', description: getFriendlyErrorMessage(err, 'Unknown error'), variant: 'destructive' });
         navigate('/login');
       } finally {
         setProcessing(false);

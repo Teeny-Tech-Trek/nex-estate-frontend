@@ -4,6 +4,7 @@ import { linkGoogleAccount } from '../services/api';
 import { setCookie } from '../lib/utils';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 const LinkGoogle: React.FC = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const LinkGoogle: React.FC = () => {
       navigate('/dashboard', { replace: true });
     } catch (err: unknown) {
       console.error(err);
-      toast({ title: 'Link failed', description: err instanceof Error ? err.message : 'Unable to link account', variant: 'destructive' });
+      toast({ title: 'Link failed', description: getFriendlyErrorMessage(err, 'Unable to link account'), variant: 'destructive' });
     } finally {
       setLoading(false);
     }

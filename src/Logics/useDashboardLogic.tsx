@@ -18,6 +18,7 @@ import type {
   Agent,
 } from '@/services/dashboard.service';
 import { calculateTimeAgo, getActivityIcon, getActivityColor, formatNumber } from '../lib/dashboardUtils';
+import { getFriendlyErrorMessage } from '@/lib/errorMapper';
 
 interface DashboardHeaderInfo {
   userName: string;
@@ -34,7 +35,7 @@ interface UseDashboardLogicReturn {
   recentActivities: RecentActivity[];
   topAgents: Agent[];
   loading: boolean;
-  error: Error | null;
+  error: string | null;
   refreshDashboard: () => Promise<void>;
 }
 
@@ -68,7 +69,7 @@ export const useDashboardLogic = (): UseDashboardLogicReturn => {
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
   const [topAgents, setTopAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Format KPI metrics from dashboard data
@@ -218,7 +219,7 @@ export const useDashboardLogic = (): UseDashboardLogicReturn => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
-      setError(err instanceof Error ? err : new Error('Failed to fetch dashboard data'));
+      setError(getFriendlyErrorMessage(err, 'Failed to fetch dashboard data'));
       setLoading(false);
     }
   }, [formatKPIMetrics]);

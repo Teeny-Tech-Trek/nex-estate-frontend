@@ -10,7 +10,7 @@
 //   const friendly = mapAxiosError(axiosError);
 // ────────────────────────────────────────────────────────────────────────────
 
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 /**
  * Maps known server `errorCode` values to user-friendly messages.
@@ -115,4 +115,19 @@ export function mapAxiosError(error: AxiosError<any>): MappedError {
     isNetworkError: false,
     isAuthError: status === 401 || status === 403,
   };
+}
+
+/**
+ * Safely extracts a user-friendly error message from any caught error.
+ */
+export function getFriendlyErrorMessage(error: unknown, fallback: string = "Something went wrong"): string {
+  if (axios.isAxiosError(error)) {
+    return (
+      (error as any).mapped?.message ||
+      error.response?.data?.message ||
+      error.message ||
+      fallback
+    );
+  }
+  return error instanceof Error ? error.message : fallback;
 }

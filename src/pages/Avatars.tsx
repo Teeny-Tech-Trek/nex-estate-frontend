@@ -27,6 +27,7 @@ import useAgentsLogic from '../Logics/useAgentsLogic';
 import { Agent } from '@/types/agent';
 import api from '@/config/apiConfig';
 import { useAuth } from '@/contexts/AuthContext';
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 export default function Avatars() {
   const navigate = useNavigate();
@@ -235,7 +236,7 @@ export default function Avatars() {
       setShowEditModal(false);
       setActionAgent(null);
     } catch (err) {
-      setAgentActionError(err instanceof Error ? err.message : 'Failed to update agent');
+      setAgentActionError(getFriendlyErrorMessage(err, 'Failed to update agent'));
     }
   };
 
@@ -251,7 +252,7 @@ export default function Avatars() {
       setShowSettingsModal(false);
       setActionAgent(null);
     } catch (err) {
-      setAgentActionError(err instanceof Error ? err.message : 'Failed to update settings');
+      setAgentActionError(getFriendlyErrorMessage(err, 'Failed to update settings'));
     }
   };
 

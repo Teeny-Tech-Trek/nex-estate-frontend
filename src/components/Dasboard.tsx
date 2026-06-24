@@ -61,7 +61,7 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#0a1628] p-10 text-red-400">
-        <p className="text-xl mb-4">Error loading dashboard: {error.message}</p>
+        <p className="text-xl mb-4">Error loading dashboard: {error}</p>
         <p className="text-md text-slate-400 mb-5">Please try again later or contact support.</p>
         <button
           type="button"

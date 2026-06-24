@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { Agent, CreateAgentPayload } from '@/types/agent';
 import agentService from '@/services/agent.service';
+import { getFriendlyErrorMessage } from '@/lib/errorMapper';
 
 interface UseAgentsLogicReturn {
   // State
@@ -40,7 +41,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
       const data = await agentService.getAgents();
       setAgents(data);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to fetch agents';
+      const msg = getFriendlyErrorMessage(err, 'Failed to fetch agents');
       setError(msg);
       console.error('fetchAgents error:', err);
     } finally {
@@ -57,7 +58,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
       // Optimistic: prepend so it appears immediately at top
       setAgents((prev) => [newAgent, ...prev]);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to create agent';
+      const msg = getFriendlyErrorMessage(err, 'Failed to create agent');
       setError(msg);
       console.error('createAgent error:', err);
       throw err; // Re-throw so the UI modal can catch and show feedback
@@ -76,7 +77,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
         setSelectedAgent((prev) => (prev ? { ...prev, ...updated } : prev));
       }
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to update agent';
+      const msg = getFriendlyErrorMessage(err, 'Failed to update agent');
       setError(msg);
       console.error('updateAgent error:', err);
       throw err;
@@ -94,7 +95,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
       await agentService.deleteAgent(agentId);
     } catch (err: any) {
       // Rollback is complex without snapshot; just refetch
-      const msg = err?.response?.data?.message || err?.message || 'Failed to delete agent';
+      const msg = getFriendlyErrorMessage(err, 'Failed to delete agent');
       setError(msg);
       console.error('deleteAgent error:', err);
       fetchAgents(); // Sync back to server state
@@ -122,7 +123,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
         prev.map((a) => (a._id === agentId ? { ...a, ...updated } : a))
       );
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to toggle agent status';
+      const msg = getFriendlyErrorMessage(err, 'Failed to toggle agent status');
       setError(msg);
       console.error('toggleAgentStatus error:', err);
       fetchAgents(); // Rollback via refetch
@@ -137,7 +138,7 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
       const dataUrl = await agentService.getAgentQrCode(agentId);
       setQrCodeDataUrl(dataUrl);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to fetch QR code';
+      const msg = getFriendlyErrorMessage(err, 'Failed to fetch QR code');
       setError(msg);
       console.error('fetchAgentQrCode error:', err);
     }

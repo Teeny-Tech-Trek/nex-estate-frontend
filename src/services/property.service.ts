@@ -85,6 +85,10 @@ const appendPropertyFormData = (
 };
 
 const getApiErrorMessage = (error: unknown, fallback: string) => {
+  const axiosErr = error as any;
+  if (axiosErr?.mapped?.message) {
+    return axiosErr.mapped.message;
+  }
   if (
     typeof error === 'object' &&
     error !== null &&

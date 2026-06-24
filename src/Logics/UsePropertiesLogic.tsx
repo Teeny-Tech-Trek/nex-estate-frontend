@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Property, PropertyMutationPayload } from '@/types/property';
 import propertyService from '@/services/property.service';
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 type ModalMode = 'add' | 'edit';
 type ViewMode = 'grid' | 'analytics';
@@ -63,7 +64,7 @@ export const usePropertiesLogic = () => {
       const data = await propertyService.getProperties();
       setProperties(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load properties');
+      setError(getFriendlyErrorMessage(err, 'Failed to load properties'));
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +89,7 @@ export const usePropertiesLogic = () => {
       );
     } catch (err) {
       setProperties(previous);
-      setError(err instanceof Error ? err.message : 'Failed to update favorite');
+      setError(getFriendlyErrorMessage(err, 'Failed to update favorite'));
     }
   }, [properties]);
 
@@ -139,7 +140,7 @@ export const usePropertiesLogic = () => {
 
         setIsModalOpen(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to save property');
+        setError(getFriendlyErrorMessage(err, 'Failed to save property'));
       } finally {
         setIsSaving(false);
         setUploadProgress(0);
@@ -162,7 +163,7 @@ export const usePropertiesLogic = () => {
         setIsViewPropertyOpen(false);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete property');
+      setError(getFriendlyErrorMessage(err, 'Failed to delete property'));
     }
   }, [selectedProperty]);
 

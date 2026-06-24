@@ -7,6 +7,7 @@ import visitService from "@/services/visit.service";
 import type { Agent } from "@/types/agent";
 import type { Property } from "@/types/property";
 import type { CreateVisitPayload, UpdateVisitPayload, Visit, VisitStatus } from "@/types/visit";
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 const visitStatuses: VisitStatus[] = ["scheduled", "completed", "cancelled", "no_show"];
 
@@ -120,7 +121,7 @@ export default function Visits() {
       setAgents(availableAgents);
       setProperties(availableProperties);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to load visits";
+      const msg = getFriendlyErrorMessage(err, "Failed to load visits");
       setError(msg);
     } finally {
       setLoading(false);
@@ -239,7 +240,7 @@ export default function Visits() {
       }
       closeModal();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to save visit";
+      const msg = getFriendlyErrorMessage(err, "Failed to save visit");
       setError(msg);
     } finally {
       setSaving(false);
@@ -251,7 +252,7 @@ export default function Visits() {
       const updated = await visitService.updateVisit(visitId, { status });
       setVisits((prev) => prev.map((item) => (item._id === visitId ? updated : item)));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to update visit status";
+      const msg = getFriendlyErrorMessage(err, "Failed to update visit status");
       setError(msg);
     }
   };
@@ -263,7 +264,7 @@ export default function Visits() {
       await visitService.deleteVisit(visitId);
       setVisits((prev) => prev.filter((item) => item._id !== visitId));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to delete visit";
+      const msg = getFriendlyErrorMessage(err, "Failed to delete visit");
       setError(msg);
     }
   };

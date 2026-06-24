@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '@/services/settings.api';
 import { useToast } from '@/hooks/use-toast';
+import { getFriendlyErrorMessage } from '@/lib/errorMapper';
 
 interface Props {
   user?: any;
@@ -62,17 +63,11 @@ export const DeleteAccountModal: React.FC<Props> = ({ user, onClose, onSuccess }
         window.location.href = '/login';
       }, 1500);
     } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        'Failed to request account deletion'
-      );
+      const friendlyMsg = getFriendlyErrorMessage(err, 'Failed to request account deletion');
+      setError(friendlyMsg);
       toast({
         title: 'Action Failed',
-        description:
-          err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          'Failed to request account deletion',
+        description: friendlyMsg,
         variant: 'destructive',
       });
       setLoading(false);
@@ -95,17 +90,11 @@ export const DeleteAccountModal: React.FC<Props> = ({ user, onClose, onSuccess }
         description: 'Your pending deletion request was cancelled.',
       });
     } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        'Failed to cancel deletion request'
-      );
+      const friendlyMsg = getFriendlyErrorMessage(err, 'Failed to cancel deletion request');
+      setError(friendlyMsg);
       toast({
         title: 'Action Failed',
-        description:
-          err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          'Failed to cancel deletion request',
+        description: friendlyMsg,
         variant: 'destructive',
       });
     } finally {

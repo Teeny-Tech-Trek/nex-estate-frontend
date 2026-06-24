@@ -17,6 +17,7 @@ import {
 import agentService from "@/services/agent.service";
 import type { Agent, AgentChatMessage } from "@/types/agent";
 import { createAgentRobotAvatar } from "@/lib/agentAvatar";
+import { getFriendlyErrorMessage } from '../lib/errorMapper';
 
 const TypingAnimation = () => (
   <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-tl-md bg-white border border-slate-200 shadow-sm px-3.5 py-3">
@@ -111,7 +112,7 @@ const AgentChatPage = () => {
         setMessages(historyResult.history || []);
       } catch (err) {
         if (!mounted) return;
-        setError(err instanceof Error ? err.message : "Failed to load chat");
+        setError(getFriendlyErrorMessage(err, "Failed to load chat"));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -168,7 +169,7 @@ const AgentChatPage = () => {
           "This agent is currently not available — its owner has reached their monthly chat limit."
         );
       } else {
-        setError(err instanceof Error ? err.message : "Message failed");
+        setError(getFriendlyErrorMessage(err, "Message failed"));
         try {
           const fallback = await agentService.chatWithAgent(id, text);
           setMessages(fallback.history || []);
