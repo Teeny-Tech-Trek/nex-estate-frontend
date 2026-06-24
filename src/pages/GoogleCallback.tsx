@@ -45,7 +45,7 @@ const GoogleCallback: React.FC = () => {
           if (res.profile?.email) url.searchParams.set('email', res.profile.email);
           if (res.profile?.firstName) url.searchParams.set('firstName', res.profile.firstName);
           if (res.profile?.lastName) url.searchParams.set('lastName', res.profile.lastName || '');
-          navigate(url.pathname + url.search);
+          navigate(url.pathname + url.search, { replace: true });
           return;
         }
 
@@ -54,7 +54,7 @@ const GoogleCallback: React.FC = () => {
           if (res.linkToken) url.searchParams.set('linkToken', res.linkToken);
           if (res.email) url.searchParams.set('email', res.email);
           if (typeof res.hasPassword !== 'undefined') url.searchParams.set('hasPassword', String(res.hasPassword));
-          navigate(url.pathname + url.search);
+          navigate(url.pathname + url.search, { replace: true });
           return;
         }
 
