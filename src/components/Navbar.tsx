@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
@@ -146,39 +148,68 @@ const Navbar = () => {
 
           {/* ── Desktop auth ── */}
           <div className="hidden md:flex items-center" style={{ gap: "clamp(8px, 0.8vw, 14px)" }}>
-            <a href="/login">
-              <motion.button
-                className="rounded-xl font-bold text-white"
-                style={{
-                  background: "transparent",
-                  border: "1.5px solid rgba(255,255,255,0.16)",
-                  padding: "clamp(7px, 0.7vw, 10px) clamp(14px, 1.4vw, 22px)",
-                  fontSize: "clamp(12.5px, 0.95vw, 14.5px)",
-                }}
-                whileHover={{ background: "rgba(255,255,255,0.08)", scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Login
-              </motion.button>
-            </a>
-            <a href="/signup">
-              <motion.button
-                className="rounded-xl font-bold text-white flex items-center gap-2"
-                style={{
-                  background: "transparent",
-                  border: "1.5px solid rgba(255,255,255,0.16)",
-                  padding: "clamp(7px, 0.7vw, 10px) clamp(14px, 1.4vw, 22px)",
-                  fontSize: "clamp(12.5px, 0.95vw, 14.5px)",
-                }}
-                whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.08)" }}
-                whileTap={{ scale: 0.97 }}
-              >
-                Sign Up
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </motion.button>
-            </a>
+            {user ? (
+              <a href="/dashboard">
+                <motion.button
+                  className="rounded-xl font-bold text-white flex items-center gap-2"
+                  style={{
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1.5px solid rgba(255,255,255,0.16)",
+                    padding: "clamp(6px, 0.6vw, 9px) clamp(12px, 1.2vw, 18px)",
+                    fontSize: "clamp(12.5px, 0.95vw, 14.5px)",
+                  }}
+                  whileHover={{ scale: 1.03, background: "rgba(255,255,255,0.12)" }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-white text-xs font-semibold">
+                        {`${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  Dashboard
+                </motion.button>
+              </a>
+            ) : (
+              <>
+                <a href="/login">
+                  <motion.button
+                    className="rounded-xl font-bold text-white"
+                    style={{
+                      background: "transparent",
+                      border: "1.5px solid rgba(255,255,255,0.16)",
+                      padding: "clamp(7px, 0.7vw, 10px) clamp(14px, 1.4vw, 22px)",
+                      fontSize: "clamp(12.5px, 0.95vw, 14.5px)",
+                    }}
+                    whileHover={{ background: "rgba(255,255,255,0.08)", scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    Login
+                  </motion.button>
+                </a>
+                <a href="/signup">
+                  <motion.button
+                    className="rounded-xl font-bold text-white flex items-center gap-2"
+                    style={{
+                      background: "transparent",
+                      border: "1.5px solid rgba(255,255,255,0.16)",
+                      padding: "clamp(7px, 0.7vw, 10px) clamp(14px, 1.4vw, 22px)",
+                      fontSize: "clamp(12.5px, 0.95vw, 14.5px)",
+                    }}
+                    whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.08)" }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    Sign Up
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </motion.button>
+                </a>
+              </>
+            )}
           </div>
 
           {/* ── Mobile toggle ── */}
@@ -227,26 +258,47 @@ const Navbar = () => {
                     {link.dropdown && <ChevronDown className="w-4 h-4 opacity-50" />}
                   </motion.a>
                 ))}
-                <div className="flex gap-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.09)" }}>
-                  <a href="/login" className="flex-1">
+                {user ? (
+                  <a href="/dashboard" className="w-full">
                     <motion.button
-                      className="w-full py-3 rounded-xl text-[14px] font-bold text-white"
-                      style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.16)" }}
+                      className="w-full py-3 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2"
+                      style={{ background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.16)" }}
                       whileTap={{ scale: 0.97 }}
                     >
-                      Login
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-white text-xs font-semibold">
+                            {`${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      Dashboard
                     </motion.button>
                   </a>
-                  <a href="/signup" className="flex-1">
-                    <motion.button
-                      className="w-full py-3 rounded-xl text-[14px] font-bold text-white"
-                      style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.16)" }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      Sign Up →
-                    </motion.button>
-                  </a>
-                </div>
+                ) : (
+                  <div className="flex gap-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.09)" }}>
+                    <a href="/login" className="flex-1">
+                      <motion.button
+                        className="w-full py-3 rounded-xl text-[14px] font-bold text-white"
+                        style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.16)" }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        Login
+                      </motion.button>
+                    </a>
+                    <a href="/signup" className="flex-1">
+                      <motion.button
+                        className="w-full py-3 rounded-xl text-[14px] font-bold text-white"
+                        style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.16)" }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        Sign Up →
+                      </motion.button>
+                    </a>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}

@@ -97,6 +97,7 @@ export interface AuthContextType {
   signup: (data: SignupData) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  updateUser: (user: User) => void;
 }
 
 // ==========================================

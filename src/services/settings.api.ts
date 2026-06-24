@@ -351,20 +351,7 @@
 // export const apiService = new SettingsApiService();
 // src/services/settings.api.ts
 import api from './api';
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface User {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  avatar?: string;
-  role: 'owner' | 'admin' | 'member' | 'agent' | 'individual';
-  accountType: 'individual' | 'organization';
-  accountId: string;
-  createdAt: string;
-}
+import { User } from '../types/auth';
 
 export interface Organization {
   _id: string;
@@ -539,13 +526,32 @@ class SettingsApiService {
     return res.data;
   }
 
-  async updateMyProfile(data: { firstName: string; lastName: string; avatar?: string }): Promise<User> {
-    const res = await api.put('/settings/profile', data);
+  async updateMyProfile(data: { firstName: string; lastName: string; avatar?: string; avatarFile?: File }): Promise<User> {
+    const formData = new FormData();
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    if (data.avatar !== undefined) {
+      formData.append('avatar', data.avatar);
+    }
+    if (data.avatarFile) {
+      formData.append('avatarFile', data.avatarFile);
+    }
+    const res = await api.put('/settings/profile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return res.data;
   }
 
-  async upgradeToOrganization(): Promise<{ message: string; organization: Organization }> {
-    const res = await api.post('/account/upgrade-to-organization');
+  async upgradeToOrganization(data: {
+    name: string;
+    companyName: string;
+    address: string;
+    phone: string;
+    realEstateLicense: string;
+  }): Promise<{ message: string; organization: Organization }> {
+    const res = await api.post('/account/upgrade-to-organization', data);
     return res.data;
   }
 
@@ -563,8 +569,8 @@ class SettingsApiService {
     return res.data;
   }
 
-  async deleteOrganization(): Promise<{ message: string }> {
-    const res = await api.delete('/organizations/delete');
+  async deleteOrganization(data: { password: string }): Promise<{ message: string }> {
+    const res = await api.delete('/organizations/delete', { data });
     return res.data;
   }
 
@@ -757,6 +763,30 @@ class SettingsApiService {
     const payload = reason?.trim() ? { reason: reason.trim() } : {};
     const res = await api.post(`/account/delete/request/${requestId}/reject`, payload);
     return res.data;
+  }
+
+  async exportData(): Promise<void> {
+    const res = await api.get('/settings/export-data', { responseType: 'blob' });
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `nex_estate_export_${Date.now()}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  }
+
+  async downloadComplianceReport(): Promise<void> {
+    const res = await api.get('/settings/compliance-report', { responseType: 'blob' });
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/html' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `compliance_report_${Date.now()}.html`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   }
 }
 

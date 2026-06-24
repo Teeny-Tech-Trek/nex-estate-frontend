@@ -201,9 +201,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false);
   }, [setLoading, setAuth, handleRefreshAuth]);
 
+  const handleUpdateUser = useCallback((newUser: User) => {
+    const normalizedUser = normalizeUser(newUser);
+    setAuth({
+      user: normalizedUser,
+      tokens: state.tokens,
+    });
+  }, [setAuth, state.tokens]);
 
   return (
-    <AuthContext.Provider value={{ user: state.user, login: handleLogin, signup: handleSignup, logout: handleLogout, refresh: handleRefresh, isLoading: state.isLoading }}>
+    <AuthContext.Provider value={{ user: state.user, login: handleLogin, signup: handleSignup, logout: handleLogout, refresh: handleRefresh, updateUser: handleUpdateUser, isLoading: state.isLoading }}>
       {children}
     </AuthContext.Provider>
   );

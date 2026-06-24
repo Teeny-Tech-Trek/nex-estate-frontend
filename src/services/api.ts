@@ -1,5 +1,5 @@
 import { AuthResponse, SignupData } from "../types/auth";
-import api from "../config/apiConfig";
+import api, { getRefreshPromise } from "../config/apiConfig";
 import { eraseCookie, getCookie } from "../lib/utils";
 
 export const signup = async (data: SignupData): Promise<AuthResponse> => {
@@ -25,7 +25,11 @@ export const logout = async (): Promise<void> => {
 };
 
 export const refresh = async (refreshToken?: string): Promise<AuthResponse> => {
-  const payload = refreshToken ? { refreshToken } : undefined;
+  if (!refreshToken) {
+    const response = await getRefreshPromise();
+    return response.data;
+  }
+  const payload = { refreshToken };
   const response = await api.post<AuthResponse>("/auth/refresh", payload);
   return response.data;
 };

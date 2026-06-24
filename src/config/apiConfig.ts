@@ -62,6 +62,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let refreshPromise: Promise<any> | null = null;
+
+export const getRefreshPromise = (): Promise<any> => {
+  if (!refreshPromise) {
+    refreshPromise = api.post('/auth/refresh')
+      .then((res) => {
+        refreshPromise = null;
+        return res;
+      })
+      .catch((err) => {
+        refreshPromise = null;
+        throw err;
+      });
+  }
+  return refreshPromise;
+};
+
 /**
  * Response interceptor: Handle 401 errors, token refresh, and error mapping
  * 
@@ -73,24 +90,65 @@ api.interceptors.request.use((config) => {
  * 5. For all errors, map to standardized MappedError via errorMapper
  */
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const resData = response.data;
+    if (resData && typeof resData === 'object' && resData.success === true && 'data' in resData) {
+      const unwrapped = resData.data;
+      if (unwrapped && (typeof unwrapped === 'object' || Array.isArray(unwrapped))) {
+        try {
+          for (const key of Object.keys(resData)) {
+            if (key === 'data') {
+              if (!(key in unwrapped)) {
+                Object.defineProperty(unwrapped, 'data', {
+                  get() { return unwrapped; },
+                  configurable: true,
+                  enumerable: false
+                });
+              }
+            } else {
+              if (!(key in unwrapped)) {
+                Object.defineProperty(unwrapped, key, {
+                  value: resData[key],
+                  writable: true,
+                  configurable: true,
+                  enumerable: false
+                });
+              }
+            }
+          }
+        } catch (e) {
+          // Ignore
+        }
+      }
+      response.data = unwrapped;
+    }
+    return response;
+  },
   async (error: AxiosError) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as any;
     if (
       error.response?.status === 401 &&
       originalRequest &&
+      !originalRequest._retry &&
       !originalRequest.url?.includes('/auth/refresh') &&
       !originalRequest.url?.includes('/auth/login')
     ) {
+      originalRequest._retry = true;
       try {
         // Attempt refresh using HttpOnly cookie on the server
-        const { data } = await api.post('/auth/refresh');
+        const { data } = await getRefreshPromise();
 
         // Store new tokens in cookies
         setCookie('accessToken', data.accessToken, 7); // 7 days
 
         // Retry original request with new token
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        if (originalRequest.headers) {
+          if (typeof originalRequest.headers.set === 'function') {
+            originalRequest.headers.set('Authorization', `Bearer ${data.accessToken}`);
+          } else {
+            originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+          }
+        }
         return api(originalRequest);
       } catch (refreshError) {
         // Clear cookies on refresh failure

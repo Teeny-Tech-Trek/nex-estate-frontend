@@ -96,7 +96,7 @@ export function mapAxiosError(error: AxiosError<any>): MappedError {
   const traceId = data?.traceId || null;
 
   // Determine user-friendly message (specific server message takes priority)
-  let message: string = data?.message || "";
+  let message: string = data?.message || data?.error || "";
   if (!message) {
     if (serverErrorCode && ERROR_CODE_MAP[serverErrorCode]) {
       message = ERROR_CODE_MAP[serverErrorCode];

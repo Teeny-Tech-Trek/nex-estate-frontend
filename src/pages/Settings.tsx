@@ -30,7 +30,10 @@ type ConfirmAction = {
   reasonPlaceholder?: string;
   successTitle?: string;
   successDescription?: string;
-  onConfirm: (reason?: string) => Promise<void> | void;
+  allowPassword?: boolean;
+  passwordLabel?: string;
+  passwordPlaceholder?: string;
+  onConfirm: (reason?: string, password?: string) => Promise<void> | void;
 };
 
 const Settings: React.FC = () => {
@@ -43,12 +46,15 @@ const Settings: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmReason, setConfirmReason] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     setConfirmReason("");
+    setConfirmPassword("");
   }, [confirmAction]);
 
   const runConfirmedAction = async () => {
@@ -56,7 +62,8 @@ const Settings: React.FC = () => {
     setConfirmLoading(true);
     try {
       const reason = confirmReason.trim();
-      await Promise.resolve(confirmAction.onConfirm(reason || undefined));
+      const password = confirmPassword;
+      await Promise.resolve(confirmAction.onConfirm(reason || undefined, password || undefined));
       if (confirmAction.successTitle || confirmAction.successDescription) {
         toast({
           title: confirmAction.successTitle || "Completed",
@@ -64,6 +71,7 @@ const Settings: React.FC = () => {
         });
       }
       setConfirmReason("");
+      setConfirmPassword("");
       setConfirmAction(null);
     } catch {
       // Action handlers already show destructive toast
@@ -188,9 +196,31 @@ const Settings: React.FC = () => {
                       </AvatarFallback>
                     </Avatar>
                     {isEditMode && (
-                      <button className="absolute bottom-0 right-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-400 transition-all shadow-lg">
-                        <Camera className="w-4 h-4 text-white" />
-                      </button>
+                      <>
+                        <input
+                          type="file"
+                          id="avatarInput"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              logic.setProfileForm((prev: any) => ({
+                                ...prev,
+                                avatarFile: file,
+                                avatar: URL.createObjectURL(file)
+                              }));
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => document.getElementById('avatarInput')?.click()}
+                          className="absolute bottom-0 right-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-400 transition-all shadow-lg"
+                        >
+                          <Camera className="w-4 h-4 text-white" />
+                        </button>
+                      </>
                     )}
                   </div>
                   <div className="text-center">
@@ -279,22 +309,7 @@ const Settings: React.FC = () => {
                     </p>
                   </div>
                   <button
-                    onClick={() =>
-                      setConfirmAction({
-                        title: "Upgrade to Organization",
-                        description:
-                          "Are you sure you want to upgrade your account to an organization account? This action cannot currently be reversed.",
-                        impacts: [
-                          "A new organization workspace will be created for your account.",
-                          "Your role will change from individual to owner.",
-                          "Your existing account, authentication, and settings will be preserved.",
-                        ],
-                        confirmLabel: "Yes, Upgrade",
-                        loadingLabel: "Upgrading account...",
-                        confirmTone: "success",
-                        onConfirm: () => logic.handleUpgradeToOrganization(),
-                      })
-                    }
+                    onClick={() => setShowUpgradeModal(true)}
                     className="w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all font-semibold"
                   >
                     <Building2 className="w-4 h-4" />
@@ -894,10 +909,16 @@ const Settings: React.FC = () => {
             <div className="pt-8">
               <SectionHeader color="from-red-600 to-red-800" title="Danger Zone" />
               <div className="mt-5 space-y-3">
-                <button className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-slate-900/30 border border-slate-800/50 text-slate-300 rounded-xl hover:bg-slate-900/50 transition-all text-sm font-medium">
+                <button
+                  onClick={logic.handleExportData}
+                  className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-slate-900/30 border border-slate-800/50 text-slate-300 rounded-xl hover:bg-slate-900/50 transition-all text-sm font-medium"
+                >
                   <Download className="w-4 h-4" /> Export All Data
                 </button>
-                <button className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-slate-900/30 border border-slate-800/50 text-slate-300 rounded-xl hover:bg-slate-900/50 transition-all text-sm font-medium">
+                <button
+                  onClick={logic.handleDownloadComplianceReport}
+                  className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-slate-900/30 border border-slate-800/50 text-slate-300 rounded-xl hover:bg-slate-900/50 transition-all text-sm font-medium"
+                >
                   <FileText className="w-4 h-4" /> Download Compliance Report
                 </button>
                 {logic.isOwner && (
@@ -914,7 +935,10 @@ const Settings: React.FC = () => {
                         confirmLabel: "Delete Organization",
                         loadingLabel: "Deleting organization...",
                         confirmTone: "danger",
-                        onConfirm: () => logic.handleDeleteOrganization(),
+                        allowPassword: true,
+                        passwordLabel: "Enter Password to Confirm",
+                        passwordPlaceholder: "Confirm your password",
+                        onConfirm: (_reason, password) => logic.handleDeleteOrganization(password || ""),
                       })
                     }
                     className="w-full sm:w-auto flex items-center gap-2 px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl hover:bg-red-500/20 transition-all text-sm font-medium"
@@ -977,14 +1001,23 @@ const Settings: React.FC = () => {
         />
       )}
 
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onUpgrade={logic.handleUpgradeToOrganization}
+      />
+
       <ActionConfirmCard
         action={confirmAction}
         reason={confirmReason}
         onReasonChange={setConfirmReason}
+        password={confirmPassword}
+        onPasswordChange={setConfirmPassword}
         isLoading={confirmLoading}
         onCancel={() => {
           if (!confirmLoading) {
             setConfirmReason("");
+            setConfirmPassword("");
             setConfirmAction(null);
           }
         }}
@@ -1000,6 +1033,8 @@ function ActionConfirmCard({
   action,
   reason,
   onReasonChange,
+  password,
+  onPasswordChange,
   isLoading,
   onCancel,
   onConfirm,
@@ -1007,6 +1042,8 @@ function ActionConfirmCard({
   action: ConfirmAction | null;
   reason: string;
   onReasonChange: (value: string) => void;
+  password: string;
+  onPasswordChange: (value: string) => void;
   isLoading: boolean;
   onCancel: () => void;
   onConfirm: () => void;
@@ -1052,6 +1089,21 @@ function ActionConfirmCard({
               />
             </div>
           )}
+          {action.allowPassword && (
+            <div className="mb-6">
+              <label className="block text-sm text-slate-200 font-semibold mb-2">
+                {action.passwordLabel || "Enter Password to Confirm"}
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => onPasswordChange(e.target.value)}
+                disabled={isLoading}
+                placeholder={action.passwordPlaceholder || "Your password"}
+                className="w-full rounded-lg border border-slate-700/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+              />
+            </div>
+          )}
           <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3">
             <button
               onClick={onCancel}
@@ -1062,7 +1114,7 @@ function ActionConfirmCard({
             </button>
             <button
               onClick={onConfirm}
-              disabled={isLoading}
+              disabled={isLoading || (action.allowPassword && !password)}
               className={`px-4 py-2.5 rounded-lg font-semibold transition-all disabled:opacity-60 flex items-center gap-2 ${toneStyles[tone]}`}
             >
               {isLoading ? (
@@ -1499,6 +1551,93 @@ function getTimeAgo(date: string) {
   if (weeks < 4) return `${weeks}w ago`;
   
   return then.toLocaleDateString();
+}
+
+interface UpgradeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onUpgrade: (data: {
+    name: string;
+    companyName: string;
+    address: string;
+    phone: string;
+    realEstateLicense: string;
+  }) => Promise<void>;
+}
+
+function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) {
+  const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [realEstateLicense, setRealEstateLicense] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async () => {
+    setError("");
+    if (!name.trim() || !companyName.trim() || !address.trim() || !phone.trim() || !realEstateLicense.trim()) {
+      setError("All fields are compulsory.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await onUpgrade({
+        name: name.trim(),
+        companyName: companyName.trim(),
+        address: address.trim(),
+        phone: phone.trim(),
+        realEstateLicense: realEstateLicense.trim(),
+      });
+      onClose();
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || "Failed to upgrade account");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-slate-900 border-slate-800/50 max-w-md">
+        <DialogHeader className="border-b border-slate-800/50 pb-4">
+          <DialogTitle className="text-xl font-bold text-white">Upgrade to Organization</DialogTitle>
+          <p className="text-slate-400 text-sm mt-1">Please fill in your compulsory organization details to upgrade.</p>
+        </DialogHeader>
+        <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-1">
+          {error && (
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+          <FieldGroup label="Organization Name">
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Acme Realty" disabled={isLoading}
+              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
+          </FieldGroup>
+          <FieldGroup label="Company Legal Name">
+            <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Acme Realty LLC" disabled={isLoading}
+              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
+          </FieldGroup>
+          <FieldGroup label="Business Address">
+            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="e.g. 123 Main St, New York, NY" disabled={isLoading}
+              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
+          </FieldGroup>
+          <FieldGroup label="Business Phone">
+            <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +1 (555) 000-0000" disabled={isLoading}
+              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
+          </FieldGroup>
+          <FieldGroup label="Real Estate License">
+            <input type="text" value={realEstateLicense} onChange={(e) => setRealEstateLicense(e.target.value)} placeholder="e.g. RE-12345678" disabled={isLoading}
+              className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
+          </FieldGroup>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 border-t border-slate-800/50 pt-4">
+          <button onClick={onClose} disabled={isLoading} className="flex-1 py-2.5 border border-slate-700/50 text-slate-300 rounded-xl hover:bg-slate-700/30 transition-all font-semibold text-sm">Cancel</button>
+          <button onClick={handleSubmit} disabled={isLoading} className="flex-1 py-2.5 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-semibold transition-all text-sm">Confirm & Upgrade</button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default Settings;

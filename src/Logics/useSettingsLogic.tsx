@@ -709,7 +709,7 @@ import {
 
 export const useSettingsLogic = () => {
   const { toast } = useToast();
-  const { user, refresh: refreshAuth } = useAuth();
+  const { user, refresh: refreshAuth, updateUser } = useAuth();
 
   // ── Data State ───────────────────────────────────────────────────────────
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -799,6 +799,22 @@ export const useSettingsLogic = () => {
               accountId: profile.accountId || '',
               avatar: profile.avatar || '',
             });
+
+            const oldOrgId = typeof user?.workingUnderOrganization === 'string'
+              ? user.workingUnderOrganization
+              : (user?.workingUnderOrganization as any)?.id || (user?.workingUnderOrganization as any)?._id || null;
+            const newOrgId = typeof profile.workingUnderOrganization === 'string'
+              ? profile.workingUnderOrganization
+              : (profile.workingUnderOrganization as any)?.id || (profile.workingUnderOrganization as any)?._id || null;
+
+            const hasChanges =
+              profile.role !== user?.role ||
+              profile.accountType !== user?.accountType ||
+              oldOrgId !== newOrgId;
+
+            if (hasChanges) {
+              updateUser(profile);
+            }
           })
           .catch(() => {}) // non-fatal if profile not available
       );
@@ -887,21 +903,44 @@ export const useSettingsLogic = () => {
   // ── Profile Actions ──────────────────────────────────────────────────────
   const handleUpdateProfile = useCallback(async () => {
     try {
-      await apiService.updateMyProfile({
+      const updatedUser = await apiService.updateMyProfile({
         firstName: profileForm.firstName,
         lastName: profileForm.lastName,
-        avatar: profileForm.avatar,
+        avatar: (profileForm as any).avatarFile ? undefined : profileForm.avatar,
+        avatarFile: (profileForm as any).avatarFile,
       });
+      updateUser(updatedUser);
+      setProfileForm((prev) => ({ ...prev, avatarFile: undefined } as any));
       toast({ title: 'Success', description: 'Profile updated successfully' });
     } catch (err: any) {
       toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to update profile'), variant: 'destructive' });
     }
-  }, [profileForm, toast]);
+  }, [profileForm, updateUser, toast]);
 
   // ── Organization Actions ─────────────────────────────────────────────────
   const handleUpdateOrganization = useCallback(async () => {
     if (!isOwner) {
       toast({ title: 'Permission Denied', description: 'Only owners can update organization', variant: 'destructive' });
+      return;
+    }
+    if (!orgForm.name?.trim()) {
+      toast({ title: 'Validation Error', description: 'Organization Name is required', variant: 'destructive' });
+      return;
+    }
+    if (!orgForm.billing?.companyName?.trim()) {
+      toast({ title: 'Validation Error', description: 'Company Legal Name is required', variant: 'destructive' });
+      return;
+    }
+    if (!orgForm.billing?.address?.trim()) {
+      toast({ title: 'Validation Error', description: 'Business Address is required', variant: 'destructive' });
+      return;
+    }
+    if (!orgForm.billing?.phone?.trim()) {
+      toast({ title: 'Validation Error', description: 'Business Phone is required', variant: 'destructive' });
+      return;
+    }
+    if (!orgForm.billing?.realEstateLicense?.trim()) {
+      toast({ title: 'Validation Error', description: 'Real Estate License is required', variant: 'destructive' });
       return;
     }
     try {
@@ -913,18 +952,52 @@ export const useSettingsLogic = () => {
     }
   }, [isOwner, orgForm, toast]);
 
-  const handleDeleteOrganization = useCallback(async () => {
+  const handleDeleteOrganization = useCallback(async (password: string) => {
     if (!isOwner) return;
     try {
-      await apiService.deleteOrganization();
-      toast({ title: 'Success', description: 'Organization deleted' });
-      window.location.href = '/login';
+      await apiService.deleteOrganization({ password });
+      toast({ title: 'Success', description: 'Organization deleted successfully' });
+      const updatedUser = await apiService.getMyProfile();
+      updateUser(updatedUser);
     } catch (err: any) {
       toast({ title: 'Error', description: getFriendlyErrorMessage(err, 'Failed to delete organization'), variant: 'destructive' });
+      throw err;
     }
-  }, [isOwner, toast]);
+  }, [isOwner, updateUser, toast]);
 
-  const handleUpgradeToOrganization = useCallback(async () => {
+  const handleExportData = useCallback(async () => {
+    try {
+      await apiService.exportData();
+      toast({ title: 'Success', description: 'Data exported successfully' });
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: getFriendlyErrorMessage(err, 'Failed to export data'),
+        variant: 'destructive',
+      });
+    }
+  }, [toast]);
+
+  const handleDownloadComplianceReport = useCallback(async () => {
+    try {
+      await apiService.downloadComplianceReport();
+      toast({ title: 'Success', description: 'Compliance report downloaded successfully' });
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: getFriendlyErrorMessage(err, 'Failed to download compliance report'),
+        variant: 'destructive',
+      });
+    }
+  }, [toast]);
+
+  const handleUpgradeToOrganization = useCallback(async (data: {
+    name: string;
+    companyName: string;
+    address: string;
+    phone: string;
+    realEstateLicense: string;
+  }) => {
     if (!isIndividualUser) {
       toast({
         title: 'Permission Denied',
@@ -935,7 +1008,7 @@ export const useSettingsLogic = () => {
     }
 
     try {
-      await apiService.upgradeToOrganization();
+      await apiService.upgradeToOrganization(data);
       await refreshAuth();
       toast({
         title: 'Success',
@@ -1324,6 +1397,8 @@ export const useSettingsLogic = () => {
     handleUpdateProfile,
     handleUpdateOrganization,
     handleDeleteOrganization,
+    handleExportData,
+    handleDownloadComplianceReport,
     handleUpgradeToOrganization,
     handleInviteMember,
     handleRevokeInvite,
