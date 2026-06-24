@@ -603,7 +603,6 @@ const Signup: React.FC = () => {
                       id="phoneNumber"
                       name="phoneNumber"
                       type="tel"
-                      required
                       value={formData.phoneNumber || ""}
                       onChange={handleChange}
                       placeholder="+1 (555) 123-4567"
