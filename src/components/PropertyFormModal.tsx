@@ -655,6 +655,7 @@ const PropertyFormModal = ({
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [deletedImages, setDeletedImages] = useState([]);
+  const [fileError, setFileError] = useState(null);
 
   useEffect(() => {
     if (initialData && mode === "edit") {
@@ -732,11 +733,27 @@ const PropertyFormModal = ({
     setPropertyData({ ...propertyData, amenities: updatedAmenities });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
-    const newFiles = selectedFiles.filter((file): file is File => file instanceof File);
-    setFiles([...files, ...newFiles]);
-    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+    const validFiles = [];
+    let hasError = false;
+
+    selectedFiles.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        hasError = true;
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (hasError) {
+      setFileError("Some files exceed the 10MB limit and were removed.");
+    } else {
+      setFileError(null);
+    }
+
+    setFiles([...files, ...validFiles]);
+    const newPreviews = validFiles.map((file) => URL.createObjectURL(file));
     setPreviews([...previews, ...newPreviews]);
   };
 
@@ -855,7 +872,7 @@ const PropertyFormModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-gray-500 shadow-2xl p-2" style={{ maxWidth: "min(1024px, calc(100vw - 24px))", maxHeight: "min(92vh, calc(100vh - 24px))" }}>
+      <DialogContent className="flex flex-col overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-gray-500 shadow-2xl p-2" style={{ maxWidth: "min(1024px, calc(100vw - 24px))", maxHeight: "min(92vh, calc(100vh - 24px))" }}>
         {/* Header Section */}
         <div className="border-b border-slate-800/50 bg-gradient-to-r from-slate-900/50 to-transparent" style={{ padding: "clamp(18px, 2.4vw, 32px) clamp(18px, 2.4vw, 32px) clamp(14px, 2vw, 24px)" }}>
           <DialogHeader>
@@ -880,8 +897,8 @@ const PropertyFormModal = ({
         </div>
 
         {/* Tabs Navigation */}
-        <Tabs defaultValue="basic" className="w-full">
-          <div className="px-4 sm:px-8 pt-6">
+        <Tabs defaultValue="basic" className="w-full flex-1 flex flex-col min-h-0">
+          <div className="flex-shrink-0 px-4 sm:px-8 pt-6">
             <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto gap-1 bg-slate-900/50 p-1.5 rounded-xl border border-slate-800/50 backdrop-blur-sm">
               <TabsTrigger 
                 value="basic" 
@@ -922,7 +939,7 @@ const PropertyFormModal = ({
           </div>
 
           {/* Tab Content Area with Scroll */}
-          <div className="px-4 sm:px-8 pb-6 overflow-y-auto" style={{ maxHeight: "calc(92vh - 280px)" }}>
+          <div className="flex-1 overflow-y-auto px-4 sm:px-8 pb-6 min-h-0 mt-4">
             <TabsContent value="basic" className="space-y-6 mt-6">
               {/* Property Title and Price */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
@@ -1067,6 +1084,16 @@ const PropertyFormModal = ({
                     <p className="text-xs text-slate-500 mt-1">PNG, JPG, WebP up to 10MB</p>
                   </label>
                 </div>
+                
+                {fileError && (
+                  <div className="mt-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 p-3 rounded-lg flex items-center justify-between">
+                    <span>{fileError}</span>
+                    <button onClick={() => setFileError(null)} className="hover:text-red-300">
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+
                 {previews.length > 0 && (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                     {previews.map((preview, index) => (
@@ -1420,12 +1447,13 @@ const PropertyFormModal = ({
                   </div>
                 ))}
               </div>
+
             </TabsContent>
           </div>
         </Tabs>
 
         {/* Footer Actions */}
-        <div className="px-6 bg-gradient-to-r from-slate-900/50 to-transparent">
+        <div className="flex-shrink-0 px-6 pt-4 pb-2 border-t border-slate-800/50 bg-slate-900/50 rounded-b-lg">
           {isSubmitting ? (
             <div className="mb-3 text-xs text-slate-300">
               Uploading... {uploadProgress}%
@@ -1450,7 +1478,7 @@ const PropertyFormModal = ({
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !!fileError}
               className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white h-12 px-8 rounded-lg shadow-lg shadow-blue-500/25"
             >
               {isSubmitting ? (
