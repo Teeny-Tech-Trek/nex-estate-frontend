@@ -739,7 +739,7 @@ const PropertyFormModal = ({
     let hasError = false;
 
     selectedFiles.forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 1 * 1024 * 1024) {
         hasError = true;
       } else {
         validFiles.push(file);
@@ -747,7 +747,7 @@ const PropertyFormModal = ({
     });
 
     if (hasError) {
-      setFileError("Some files exceed the 10MB limit and were removed.");
+      setFileError("Some files exceed the 1MB limit and were removed.");
     } else {
       setFileError(null);
     }
@@ -1081,7 +1081,7 @@ const PropertyFormModal = ({
                     <p className="text-sm text-slate-400 group-hover:text-slate-300">
                       <span className="font-medium text-blue-400">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">PNG, JPG, WebP up to 10MB</p>
+                    <p className="text-xs text-slate-500 mt-1">PNG, JPG, WebP up to 1MB</p>
                   </label>
                 </div>
                 

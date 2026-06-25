@@ -59,6 +59,11 @@ api.interceptors.request.use((config) => {
   // ── Trace ID ────────────────────────────────────────────────────────
   config.headers['X-Trace-Id'] = generateTraceId();
 
+  // ── FormData Boundary Fix ───────────────────────────────────────────
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+
   return config;
 });
 

@@ -115,11 +115,7 @@ const agentService = {
     if (payload.avatarFile) {
       formData.append('avatarFile', payload.avatarFile, payload.avatarFile.name || 'avatar.png');
     }
-    const response = await api.post<Agent>('/agents/createagent', formData, {
-      headers: {
-        'Content-Type': undefined
-      }
-    });
+    const response = await api.post<Agent>('/agents/createagent', formData);
     return normaliseAgent(response.data);
   },
 
