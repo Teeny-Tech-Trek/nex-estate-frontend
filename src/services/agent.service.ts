@@ -112,9 +112,15 @@ const agentService = {
     if (payload.voice) formData.append('voice', payload.voice);
     if (payload.tone) formData.append('tone', payload.tone);
     if (payload.avatar) formData.append('avatar', payload.avatar);
-    if (payload.avatarFile) formData.append('avatarFile', payload.avatarFile);
+    if (payload.avatarFile) {
+      formData.append('avatarFile', payload.avatarFile, payload.avatarFile.name || 'avatar.png');
+    }
 
-    const response = await api.post<Agent>('/agents/createagent', formData);
+    const response = await api.post<Agent>('/agents/createagent', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return normaliseAgent(response.data);
   },
 
