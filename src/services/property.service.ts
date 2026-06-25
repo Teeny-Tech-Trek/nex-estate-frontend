@@ -116,7 +116,7 @@ export const createProperty = async (
   const formData = appendPropertyFormData(payload, files);
   try {
     const res = await api.post<ApiEnvelope<Property>>('/properties/create', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': undefined },
       timeout: 120000,
       onUploadProgress: (event) => {
         if (!event.total || !onProgress) return;
@@ -140,7 +140,7 @@ export const updateProperty = async (
   const formData = appendPropertyFormData(payload, files, deletedImages);
   try {
     const res = await api.put<ApiEnvelope<Property>>(`/properties/update/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': undefined },
       timeout: 120000,
       onUploadProgress: (event) => {
         if (!event.total || !onProgress) return;
