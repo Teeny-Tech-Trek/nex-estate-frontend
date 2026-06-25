@@ -578,7 +578,15 @@ export default function Avatars() {
                       className="w-full text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 file:cursor-pointer transition-all duration-200"
                     />
                     {avatarFileError && (
-                      <p className="text-xs text-red-400 mt-2">{avatarFileError}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <p className="text-xs text-red-400">{avatarFileError}</p>
+                        <button 
+                          onClick={() => setAvatarFileError(null)} 
+                          className="text-xs text-slate-400 hover:text-white"
+                        >
+                          Dismiss
+                        </button>
+                      </div>
                     )}
                     {formData.avatarFile && !avatarFileError && (
                       <p className="text-xs text-slate-400 mt-2">Selected: {formData.avatarFile.name}</p>
@@ -623,7 +631,7 @@ export default function Avatars() {
                 </button>
                 <button
                   onClick={handleCreateAgent}
-                  disabled={!formData.name || !formData.personality || !formData.description || loading}
+                  disabled={!formData.name || !formData.personality || !formData.description || !!avatarFileError || loading}
                   className="group flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 disabled:hover:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
                 >
                   {loading ? 'Creating...' : 'Create Agent'}
