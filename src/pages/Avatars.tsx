@@ -56,6 +56,7 @@ export default function Avatars() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused' | 'draft'>('all');
   const [formError, setFormError] = useState<string | null>(null);
+  const [avatarFileError, setAvatarFileError] = useState<string | null>(null);
   const [agentActionError, setAgentActionError] = useState<string | null>(null);
   const [actionAgent, setActionAgent] = useState<Agent | null>(null);
   const fallbackMaxAgents = user?.accountType === 'organization' ? 2 : 1;
@@ -563,10 +564,23 @@ export default function Avatars() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setFormData({ ...formData, avatarFile: e.target.files?.[0] ?? null })}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file && file.size > 1024 * 1024) {
+                          setAvatarFileError('Avatar image must be less than 1MB');
+                          setFormData({ ...formData, avatarFile: null });
+                          e.target.value = ''; // Reset the input
+                          return;
+                        }
+                        setAvatarFileError(null);
+                        setFormData({ ...formData, avatarFile: file ?? null });
+                      }}
                       className="w-full text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 file:cursor-pointer transition-all duration-200"
                     />
-                    {formData.avatarFile && (
+                    {avatarFileError && (
+                      <p className="text-xs text-red-400 mt-2">{avatarFileError}</p>
+                    )}
+                    {formData.avatarFile && !avatarFileError && (
                       <p className="text-xs text-slate-400 mt-2">Selected: {formData.avatarFile.name}</p>
                     )}
                   </div>
