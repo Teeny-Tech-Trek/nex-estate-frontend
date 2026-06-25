@@ -52,14 +52,11 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
   // ─── Create Agent ──────────────────────────────────────────────────────────
   const createAgent = useCallback(async (payload: CreateAgentPayload): Promise<void> => {
     setLoading(true);
-    setError(null);
     try {
       const newAgent = await agentService.createAgent(payload);
       // Optimistic: prepend so it appears immediately at top
       setAgents((prev) => [newAgent, ...prev]);
     } catch (err: any) {
-      const msg = getFriendlyErrorMessage(err, 'Failed to create agent');
-      setError(msg);
       console.error('createAgent error:', err);
       throw err; // Re-throw so the UI modal can catch and show feedback
     } finally {
@@ -69,7 +66,6 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
 
   const updateAgent = useCallback(async (agentId: string, payload: Partial<Agent>): Promise<void> => {
     setLoading(true);
-    setError(null);
     try {
       const updated = await agentService.updateAgent(agentId, payload);
       setAgents((prev) => prev.map((agent) => (agent._id === agentId ? { ...agent, ...updated } : agent)));
@@ -77,8 +73,6 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
         setSelectedAgent((prev) => (prev ? { ...prev, ...updated } : prev));
       }
     } catch (err: any) {
-      const msg = getFriendlyErrorMessage(err, 'Failed to update agent');
-      setError(msg);
       console.error('updateAgent error:', err);
       throw err;
     } finally {
@@ -88,15 +82,12 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
 
   // ─── Delete Agent ──────────────────────────────────────────────────────────
   const deleteAgent = useCallback(async (agentId: string): Promise<void> => {
-    setError(null);
     // Optimistic removal
     setAgents((prev) => prev.filter((a) => a._id !== agentId));
     try {
       await agentService.deleteAgent(agentId);
     } catch (err: any) {
       // Rollback is complex without snapshot; just refetch
-      const msg = getFriendlyErrorMessage(err, 'Failed to delete agent');
-      setError(msg);
       console.error('deleteAgent error:', err);
       fetchAgents(); // Sync back to server state
       throw err;
@@ -105,8 +96,6 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
 
   // ─── Toggle Agent Status ───────────────────────────────────────────────────
   const toggleAgentStatus = useCallback(async (agentId: string): Promise<void> => {
-    setError(null);
-
     // Optimistic toggle: active ↔ paused (draft → active for first toggle)
     setAgents((prev) =>
       prev.map((a) => {
@@ -123,8 +112,6 @@ const useAgentsLogic = (): UseAgentsLogicReturn => {
         prev.map((a) => (a._id === agentId ? { ...a, ...updated } : a))
       );
     } catch (err: any) {
-      const msg = getFriendlyErrorMessage(err, 'Failed to toggle agent status');
-      setError(msg);
       console.error('toggleAgentStatus error:', err);
       fetchAgents(); // Rollback via refetch
       throw err;

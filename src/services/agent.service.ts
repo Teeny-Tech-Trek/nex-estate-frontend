@@ -114,9 +114,7 @@ const agentService = {
     if (payload.avatar) formData.append('avatar', payload.avatar);
     if (payload.avatarFile) formData.append('avatarFile', payload.avatarFile);
 
-    const response = await api.post<Agent>('/agents/createagent', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await api.post<Agent>('/agents/createagent', formData);
     return normaliseAgent(response.data);
   },
 

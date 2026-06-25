@@ -155,8 +155,8 @@ export default function Avatars() {
       setShowCreateModal(false);
       setFormData({ name: '', personality: '', voice: '', tone: 'professional', avatar: '', description: '', avatarFile: null });
       setFormError(null);
-    } catch {
-      // Error is already stored in the hook's `error` state
+    } catch (err: any) {
+      setFormError(getFriendlyErrorMessage(err, 'Failed to create agent'));
     }
   };
 
