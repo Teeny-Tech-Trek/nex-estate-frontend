@@ -195,7 +195,7 @@ const WelcomeVisual = () => (
     <motion.div className="relative" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity }}>
       <div
         className="w-32 h-32 rounded-[2rem] flex items-center justify-center"
-        style={{ background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)", boxShadow: "0 0 80px 20px rgba(14,165,233,0.3)" }}
+        style={{ background: "linear-gradient(135deg, #818CF8 0%, #3b82f6 100%)", boxShadow: "0 0 80px 20px rgba(129,140,248,0.3)" }}
       >
         <Home size={56} className="text-white" />
       </div>
@@ -217,7 +217,7 @@ const WelcomeVisual = () => (
     </motion.div>
     <motion.div
       className="absolute bottom-0 px-4 py-2 rounded-xl text-sm font-semibold text-white"
-      style={{ background: "rgba(14,165,233,0.25)", border: "1px solid rgba(14,165,233,0.4)" }}
+      style={{ background: "rgba(129,140,248,0.25)", border: "1px solid rgba(129,140,248,0.4)" }}
       animate={{ y: [0, -4, 0] }}
       transition={{ duration: 3, repeat: Infinity, delay: 1 }}
     >
@@ -233,9 +233,9 @@ const STEPS: OnboardingStep[] = [
   {
     id: "welcome",
     icon: <Sparkles size={22} />,
-    accentColor: "#0ea5e9",
-    gradientFrom: "rgba(14,165,233,0.15)",
-    gradientTo: "rgba(14,165,233,0.03)",
+    accentColor: "#818CF8",
+    gradientFrom: "rgba(129,140,248,0.15)",
+    gradientTo: "rgba(129,140,248,0.03)",
     tag: "Welcome to",
     title: "Nex-Estate",
     description: "Your AI-powered virtual sales platform that transforms how real estate professionals connect with clients.",
@@ -249,9 +249,9 @@ const STEPS: OnboardingStep[] = [
   {
     id: "avatars",
     icon: <Bot size={22} />,
-    accentColor: "#9b6dff",
-    gradientFrom: "rgba(155,109,255,0.15)",
-    gradientTo: "rgba(155,109,255,0.03)",
+    accentColor: "#6c3fc5",
+    gradientFrom: "rgba(108,63,197,0.15)",
+    gradientTo: "rgba(108,63,197,0.03)",
     tag: "Feature 01",
     title: "AI Avatar Agents",
     description: "Deploy intelligent AI avatars that look, sound, and respond like real estate experts. Each avatar learns from your listings and engages buyers autonomously.",
@@ -281,9 +281,9 @@ const STEPS: OnboardingStep[] = [
   {
     id: "properties",
     icon: <Home size={22} />,
-    accentColor: "#06b6d4",
-    gradientFrom: "rgba(6,182,212,0.15)",
-    gradientTo: "rgba(6,182,212,0.03)",
+    accentColor: "#38BDF8",
+    gradientFrom: "rgba(56,189,248,0.15)",
+    gradientTo: "rgba(56,189,248,0.03)",
     tag: "Feature 03",
     title: "Property Management",
     description: "Organize your entire portfolio in one place. Add listings with rich media, link them to your avatars, and let AI match buyers to the perfect properties.",
@@ -455,7 +455,7 @@ const OnboardingFlow: React.FC = () => {
             <motion.div
               className="relative w-full max-w-[760px] rounded-[2.5rem] overflow-hidden"
               style={{
-                background: "linear-gradient(145deg, #0c1228 0%, #07091e 100%)",
+                background: "linear-gradient(145deg, #060b24 0%, #0d1340 100%)",
                 border: `1px solid ${step.accentColor}28`,
                 boxShadow: `0 50px 120px -20px rgba(0,0,0,0.85), 0 0 0 1px ${step.accentColor}12, inset 0 1px 0 rgba(255,255,255,0.04)`,
               }}
@@ -467,9 +467,9 @@ const OnboardingFlow: React.FC = () => {
             >
               {/* Top accent line */}
               <motion.div
-                className="absolute top-0 left-0 right-0 h-[2px]"
-                style={{ background: `linear-gradient(90deg, transparent 0%, ${step.accentColor} 50%, transparent 100%)` }}
-                animate={{ opacity: [0.5, 1, 0.5] }}
+                className="absolute top-0 left-0 right-0 h-[2.5px]"
+                style={{ background: "linear-gradient(90deg, #6c3fc5 0%, #818CF8 50%, #38BDF8 100%)" }}
+                animate={{ opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 2.5, repeat: Infinity }}
               />
 
