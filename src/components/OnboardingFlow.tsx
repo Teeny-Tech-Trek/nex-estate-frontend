@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bot,
@@ -344,32 +345,55 @@ const ProgressDots = ({ total, current, accentColor }: { total: number; current:
   </div>
 );
 
-const ONBOARDING_KEY = "nex_estate_onboarding_v1";
+// localStorage key for logged-in users (persists forever)
+const ONBOARDING_KEY_PERSISTENT = "nex_estate_onboarding_v1";
+// sessionStorage key for guests (resets when tab/browser closes)
+const ONBOARDING_KEY_SESSION = "nex_estate_onboarding_session_v1";
 
 // ─────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────
 const OnboardingFlow: React.FC = () => {
+  const { user, isLoading } = useAuth();
   const [visible, setVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem(ONBOARDING_KEY);
-    if (!seen) {
-      const t = setTimeout(() => setVisible(true), 700);
-      return () => clearTimeout(t);
+    // Wait until auth state is resolved before deciding
+    if (isLoading) return;
+
+    if (user) {
+      // ✅ Logged-in user: show only once ever (localStorage persists across sessions)
+      const seen = localStorage.getItem(ONBOARDING_KEY_PERSISTENT);
+      if (!seen) {
+        const t = setTimeout(() => setVisible(true), 700);
+        return () => clearTimeout(t);
+      }
+    } else {
+      // 👤 Guest / not logged in: show once per browser session (sessionStorage resets on tab close)
+      const seen = sessionStorage.getItem(ONBOARDING_KEY_SESSION);
+      if (!seen) {
+        const t = setTimeout(() => setVisible(true), 700);
+        return () => clearTimeout(t);
+      }
     }
-  }, []);
+  }, [user, isLoading]);
 
   const dismiss = useCallback(() => {
     setClosing(true);
     setTimeout(() => {
       setVisible(false);
-      localStorage.setItem(ONBOARDING_KEY, "true");
+      if (user) {
+        // Mark as permanently seen for logged-in users
+        localStorage.setItem(ONBOARDING_KEY_PERSISTENT, "true");
+      } else {
+        // Mark as seen for this session only for guests
+        sessionStorage.setItem(ONBOARDING_KEY_SESSION, "true");
+      }
     }, 350);
-  }, []);
+  }, [user]);
 
   const goNext = useCallback(() => {
     if (currentStep >= STEPS.length - 1) { dismiss(); return; }
