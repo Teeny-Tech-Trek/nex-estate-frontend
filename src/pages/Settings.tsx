@@ -399,6 +399,36 @@ const Settings: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* ── Product Tour Section ──────────────────────────────── */}
+            <div className="bg-slate-900/30 border border-slate-800/50 rounded-2xl p-4 sm:p-6 lg:p-8">
+              <SectionHeader color="from-indigo-500 to-purple-500" title="Product Tour" />
+              <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center shrink-0">
+                    <Zap className="w-6 h-6 text-indigo-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white text-sm sm:text-base">Interactive Dashboard Tour</h3>
+                    <p className="text-sm text-slate-400 mt-0.5">
+                      Replay the guided walkthrough to rediscover all the features of your dashboard.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    const userId = logic.user?.id || logic.user?._id;
+                    const key = userId ? `nex_dashboard_tour_v1_${userId}` : 'nex_dashboard_tour_v1';
+                    localStorage.removeItem(key);
+                    window.location.href = '/dashboard';
+                  }}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-400 border border-indigo-500/40 rounded-xl transition-all font-semibold text-sm"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Restart Tour
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

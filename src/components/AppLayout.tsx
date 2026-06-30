@@ -122,7 +122,7 @@ const AppLayout = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFB]">
       {/* Top Navbar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#0a1628] shadow-sm">
+      <header id="tour-navbar" className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#0a1628] shadow-sm">
         <div className="flex items-center justify-between" style={{ height: "clamp(56px, 6vh, 68px)", padding: "0 clamp(12px, 2vw, 32px)" }}>
           {/* LEFT SECTION - Logo and Name */}
           <div className="flex items-center gap-2.5 min-w-fit">
@@ -144,6 +144,7 @@ const AppLayout = () => {
             return (
               <button
                 key={item.path}
+                id={`tour-nav-${item.label.toLowerCase()}`}
                 onClick={() => navigate(item.path)}
                 className={`flex items-center gap-1.5 rounded-lg font-medium transition-all duration-300 ${
                   isActive
@@ -162,7 +163,7 @@ const AppLayout = () => {
           {/* RIGHT SECTION - Bell and User */}
           <div className="flex items-center gap-3 ml-auto">
             {/* Bell Icon */}
-            <div className="relative" ref={notificationRef}>
+            <div className="relative" ref={notificationRef} id="tour-notifications">
               <Button 
                 variant="ghost" 
                 size="icon" 
