@@ -320,9 +320,10 @@ const TourArrow: React.FC<{ placement: Placement; targetRect: Rect }> = ({
 // ─────────────────────────────────────────────
 
 const WelcomeModal: React.FC<{
+  totalSteps: number;
   onStart: () => void;
   onSkip: () => void;
-}> = ({ onStart, onSkip }) => {
+}> = ({ totalSteps, onStart, onSkip }) => {
   return (
     <motion.div
       className="fixed inset-0 z-[10000] flex items-center justify-center p-4"
@@ -403,7 +404,7 @@ const WelcomeModal: React.FC<{
             transition={{ delay: 0.35 }}
           >
             <Clock size={14} />
-            ~60 seconds · 9 steps
+            ~60 seconds · {totalSteps} steps
           </motion.div>
 
           <motion.div
@@ -888,6 +889,7 @@ const ProductTour: React.FC = () => {
       {tour.phase === 'welcome' && (
         <WelcomeModal
           key="welcome"
+          totalSteps={tour.totalSteps}
           onStart={tour.beginTouring}
           onSkip={tour.skipTour}
         />

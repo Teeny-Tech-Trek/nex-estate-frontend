@@ -1,13 +1,14 @@
 import {
   LayoutDashboard,
-  Navigation,
+  Users,
+  Building,
+  CalendarCheck2,
+  MessageSquare,
   BarChart3,
   TrendingUp,
-  Activity,
-  Users,
-  Bell,
-  Settings,
   Target,
+  Activity,
+  Bell,
 } from 'lucide-react';
 
 import { LucideIcon } from 'lucide-react';
@@ -33,20 +34,23 @@ export interface TourStep {
   onBeforeStep?: () => void | Promise<void>;
   /** Callback fired after this step is completed (user clicks Next) */
   onAfterStep?: () => void | Promise<void>;
-  /** If provided, step is only shown when this returns true */
-  condition?: () => boolean;
-  /** Extra padding around the spotlight cutout (default: 8) */
+  /** Spotlight padding override in pixels */
   spotlightPadding?: number;
+  /** Condition to determine if the step should be shown */
+  condition?: () => boolean;
   /** Custom button text overrides */
-  customButtonText?: { next?: string; prev?: string };
+  customButtonText?: {
+    next?: string;
+    prev?: string;
+  };
 }
 
 export interface TourConfig {
-  /** Unique tour identifier (for localStorage keying) */
+  /** Unique tour identifier for storage */
   tourId: string;
-  /** Array of steps */
+  /** List of steps in the tour */
   steps: TourStep[];
-  /** Delay in ms before auto-starting (default: 1500) */
+  /** Auto start delay in milliseconds */
   autoStartDelay?: number;
 }
 
@@ -56,25 +60,55 @@ export interface TourConfig {
 
 export const DASHBOARD_TOUR_STEPS: TourStep[] = [
   {
-    id: 'welcome-header',
-    target: '#tour-welcome-header',
+    id: 'nav-dashboard',
+    target: '#tour-nav-dashboard',
     title: 'Your Command Center',
     description:
-      'Welcome to your dashboard! This is your central hub where you can monitor all your real estate operations at a glance.',
+      'This is your control center. Here, you get a bird\'s-eye view of your business, live stats, trends, and recent user activity.',
     placement: 'bottom',
     icon: LayoutDashboard,
-    spotlightPadding: 12,
+    spotlightPadding: 6,
     customButtonText: { next: "Let's go! →" },
   },
   {
-    id: 'navigation',
-    target: '#tour-navbar',
-    title: 'Quick Navigation',
+    id: 'nav-avatars',
+    target: '#tour-nav-avatars',
+    title: 'AI Agent Avatars',
     description:
-      'Use the navigation bar to quickly switch between Avatars, Properties, Visits, Leads, and Settings — everything is just one click away.',
+      'Create, configure, and train your specialized AI avatars. These avatars handle customer queries, schedule visits, and nurture your leads 24/7.',
     placement: 'bottom',
-    icon: Navigation,
-    spotlightPadding: 4,
+    icon: Users,
+    spotlightPadding: 6,
+  },
+  {
+    id: 'nav-properties',
+    target: '#tour-nav-properties',
+    title: 'Manage Properties',
+    description:
+      'Upload and organize your real estate listings. Input key parameters, media, and features for your AI agents to showcase to potential clients.',
+    placement: 'bottom',
+    icon: Building,
+    spotlightPadding: 6,
+  },
+  {
+    id: 'nav-visits',
+    target: '#tour-nav-visits',
+    title: 'Scheduled Visits',
+    description:
+      'Track in-person, video, and virtual tours scheduled by your AI avatars. View upcoming showings, status, and client details.',
+    placement: 'bottom',
+    icon: CalendarCheck2,
+    spotlightPadding: 6,
+  },
+  {
+    id: 'nav-leads',
+    target: '#tour-nav-leads',
+    title: 'Leads Pipeline',
+    description:
+      'View and manage all incoming leads captured by your avatars. Check client profiles, conversation history, interest levels, and deal status.',
+    placement: 'bottom',
+    icon: MessageSquare,
+    spotlightPadding: 6,
   },
   {
     id: 'kpi-metrics',
@@ -135,16 +169,6 @@ export const DASHBOARD_TOUR_STEPS: TourStep[] = [
     placement: 'bottom',
     icon: Bell,
     spotlightPadding: 12,
-  },
-  {
-    id: 'settings',
-    target: '#tour-nav-settings',
-    title: 'Customize Your Experience',
-    description:
-      'Head to Settings to manage your profile, team, billing, integrations, and security preferences. You can also restart this tour anytime from there!',
-    placement: 'bottom',
-    icon: Settings,
-    spotlightPadding: 10,
     customButtonText: { next: 'Finish 🎉' },
   },
 ];
