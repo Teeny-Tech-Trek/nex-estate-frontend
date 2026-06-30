@@ -572,7 +572,6 @@ const SpotlightOverlay: React.FC<{
           height={vh}
           fill="rgba(0,0,0,0.72)"
           mask="url(#tour-spotlight-mask)"
-          style={{ backdropFilter: 'blur(2px)' }}
         />
       </svg>
     </div>
@@ -748,6 +747,40 @@ const ProductTour: React.FC = () => {
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
   const recalcTimerRef = useRef<number | null>(null);
+
+  // Dynamic class highlight to bring element above overlay
+  useEffect(() => {
+    if (tour.phase !== 'touring' || !tour.currentStep) return;
+
+    const selector = tour.currentStep.target;
+    let targetEl: HTMLElement | null = null;
+
+    const highlight = () => {
+      targetEl = document.querySelector(selector) as HTMLElement;
+      if (targetEl) {
+        targetEl.classList.add('tour-highlighted');
+      }
+    };
+
+    highlight();
+
+    // Check again if element mounts/renders later
+    const obs = new MutationObserver(() => {
+      if (!targetEl) highlight();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      obs.disconnect();
+      if (targetEl) {
+        targetEl.classList.remove('tour-highlighted');
+      } else {
+        document.querySelectorAll('.tour-highlighted').forEach((el) => {
+          el.classList.remove('tour-highlighted');
+        });
+      }
+    };
+  }, [tour.phase, tour.currentStepIndex, tour.currentStep?.target]);
 
   // Recalculate target rect on step change + window resize
   const recalcRect = useCallback(() => {
