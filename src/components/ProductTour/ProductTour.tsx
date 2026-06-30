@@ -625,10 +625,18 @@ const TourTooltip: React.FC<{
       <motion.div
         ref={tooltipRef}
         className="tour-tooltip"
-        initial={{ opacity: 0, scale: 0.9, y: placement === 'top' ? 15 : placement === 'bottom' ? -15 : 0, x: placement === 'left' ? 15 : placement === 'right' ? -15 : 0 }}
-        animate={{ opacity: mounted ? 1 : 0, scale: 1, y: 0, x: 0, top: pos.top, left: pos.left }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{
+          opacity: mounted ? 1 : 0,
+          scale: 1,
+          top: pos.top,
+          left: pos.left,
+        }}
         exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+        transition={{
+          duration: 0.45,
+          ease: [0.4, 0, 0.2, 1],
+        }}
         style={{ position: 'fixed' }}
         role="dialog"
         aria-label={`Tour step ${stepIndex + 1}: ${step.title}`}
@@ -922,21 +930,18 @@ const ProductTour: React.FC = () => {
 
           {/* Tooltip */}
           {targetRect && (
-            <AnimatePresence mode="wait">
-              <TourTooltip
-                key={tour.currentStep.id}
-                step={tour.currentStep}
-                stepIndex={tour.currentStepIndex}
-                totalSteps={tour.totalSteps}
-                progress={tour.progress}
-                targetRect={targetRect}
-                onNext={tour.nextStep}
-                onPrev={tour.prevStep}
-                onSkip={tour.skipTour}
-                isFirst={tour.currentStepIndex === 0}
-                isLast={tour.currentStepIndex === tour.totalSteps - 1}
-              />
-            </AnimatePresence>
+            <TourTooltip
+              step={tour.currentStep}
+              stepIndex={tour.currentStepIndex}
+              totalSteps={tour.totalSteps}
+              progress={tour.progress}
+              targetRect={targetRect}
+              onNext={tour.nextStep}
+              onPrev={tour.prevStep}
+              onSkip={tour.skipTour}
+              isFirst={tour.currentStepIndex === 0}
+              isLast={tour.currentStepIndex === tour.totalSteps - 1}
+            />
           )}
         </React.Fragment>
       )}

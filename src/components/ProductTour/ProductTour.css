@@ -40,7 +40,6 @@
   border-radius: 12px;
   pointer-events: none;
   animation: tour-spotlight-glow 2s ease-in-out infinite;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Tooltip ───────────────────────────────── */
@@ -50,7 +49,6 @@
   width: 380px;
   max-width: calc(100vw - 32px);
   pointer-events: all;
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tour-tooltip-card {
