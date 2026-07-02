@@ -28,7 +28,6 @@ import AcceptInvitePage from "./pages/AcceptInvitePage";
 import Footer from "./components/Footer";
 import { useEffect } from "react";
 import Dashboard from "./components/Dasboard";
-import OnboardingFlow from "./components/OnboardingFlow";
 import ProductTour from "./components/ProductTour/ProductTour";
 
 const queryClient = new QueryClient();
@@ -52,7 +51,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
-              <OnboardingFlow />
               <ProductTour />
             <Routes>
               <Route path="/" element={<Index />} />
