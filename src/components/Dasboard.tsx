@@ -78,7 +78,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#0a1628]" style={{ padding: "clamp(16px, 3vw, 40px)" }}>
       <div className="max-w-[1920px] mx-auto">
         {/* Welcome Header */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-6 sm:mb-8" id="tour-welcome-header">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="min-w-0">
               <h1 className="font-bold font-syne-bold text-white mb-1 truncate" style={{ fontSize: "clamp(1.4rem, 2.4vw, 2rem)" }}>
@@ -110,7 +110,7 @@ const Dashboard = () => {
         )}
 
         {/* KPI Metrics Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8" id="tour-kpi-metrics">
           {kpiMetrics.map((metric) => (
             <KPICard
               key={metric.label}
@@ -127,7 +127,7 @@ const Dashboard = () => {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* Leads Trend Chart - Spans 2 columns */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
+          <div id="tour-leads-chart" className="lg:col-span-2 bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white mb-1">Leads Trend (30 Days)</h2>
               <p className="text-slate-400 text-sm">Daily new leads vs closed</p>
@@ -191,7 +191,7 @@ const Dashboard = () => {
           </div>
 
           {/* Visit to Conversion */}
-          <div className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
+          <div id="tour-conversion" className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white mb-1">Visit to Conversion</h2>
               <p className="text-slate-400 text-sm">How many visits turn into deals</p>
@@ -244,8 +244,7 @@ const Dashboard = () => {
 
         {/* Bottom Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Activity */}
-          <div className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
+          <div id="tour-activity" className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white mb-1">Recent Activity</h2>
               <p className="text-slate-400 text-sm">Latest leads, visits & chats</p>
@@ -263,8 +262,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* Top Agents */}
-          <div className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
+          <div id="tour-top-agents" className="bg-gradient-to-br from-[#0d1b2a] to-[#162335] rounded-xl border border-cyan-500/10 p-6 shadow-xl">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-white mb-1">Top Agents</h2>
               <p className="text-slate-400 text-sm">By conversions & revenue</p>
