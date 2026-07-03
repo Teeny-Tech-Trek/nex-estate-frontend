@@ -40,3 +40,36 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+
+      - name: Send Email Notification on Success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "🚀 NexEstate Frontend Deployment Success!"
+          html_body: |
+            <h3>NexEstate Frontend successfully deployed to S3 + CloudFront!</h3>
+            <p><strong>Commit:</strong> ${{ github.event.head_commit.message }}</p>
+            <p><strong>Author:</strong> ${{ github.event.head_commit.author.name }}</p>
+            <p><strong>Run Link:</strong> <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
+          to: ${{ github.event.head_commit.author.email }}
+          from: "NexEstate CI/CD <${{ secrets.SENDER_EMAIL }}>"
+
+      - name: Send Email Notification on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "❌ NexEstate Frontend Deployment FAILED"
+          html_body: |
+            <h3>NexEstate Frontend deployment failed.</h3>
+            <p>Please check the logs immediately to resolve the issue.</p>
+            <p><strong>Run Link:</strong> <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View GitHub Actions Run</a></p>
+          to: ${{ github.event.head_commit.author.email }}
+          from: "NexEstate CI/CD <${{ secrets.SENDER_EMAIL }}>"
